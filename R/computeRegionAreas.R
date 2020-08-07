@@ -33,8 +33,7 @@ computeRegionAreas<-function(regsFileName, gridFileName) {
     
     regionAreas.dt <- regions[
             , tileArea_km2 := gridParams$tileX*gridParams$tileY *1e-6][
-                , list(regionArea_km2 = sum(tileArea_km2)), by = 'region'][
-                    , region := as.factor(region)]
+                , list(regionArea_km2 = sum(tileArea_km2)), by = 'region']
     
     return (regionAreas.dt)
 }

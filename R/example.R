@@ -23,13 +23,17 @@
 #' # compute the parameters of the distribution
 #' pRFileName <- system.file(path, 'pop_reg.csv', package = 'inference')
 #' pRateFileName <- system.file(path, 'pnt_rate.csv', package = 'inference')
-#' params <- computeDistrParams(omega_r, pRFileName, pRateFileName)
+#' grFileName <- system.file(path, 'grid.csv', package = 'inference')
+#' params <- computeDistrParams(omega_r, pRFileName, pRateFileName, rgFileName, grFileName)
 #' 
 #' # compute the population count distribution using the Beta Negative Binomial distribution
-#' n_bnb <- computeInitialPopulationBNB(nnet, params)
+#' n_bnb <- computeInitialPopulationBNB(nnet, params, rndVal = TRUE)
 #' 
 #' 
 #' # compute the population count distribution using the Negative Binomial distribution
-#' n_nb <- computeInitialPopulationNB(nnet, params)
+#' n_nb <- computeInitialPopulationNB(nnet, params, rndVal = TRUE)
+#' 
+#' # compute the population count distribution using the state process Negative Binomial distribution
+#' n_stnb <- computeInitialPopulationStateNB(nnet, params, rndVal = TRUE)
 #' 
 example <- function() {}

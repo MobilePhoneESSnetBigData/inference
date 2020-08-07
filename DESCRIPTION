@@ -20,14 +20,14 @@ Suggests:
     rmarkdown
 VignetteBuilder: knitr
 Collate: 
-  'buildCluster.R'
-  'computeDeduplicationFactors.R'
-  'computeDistrParams.R'
-  'computeInitialPopulationBNB.R'
-  'computeIntialPopulationNB.R'
-  'computeIntialPopulationStateNB.R'
-  'computeRegionAreas.R'
-  'inference.R'
-  'readNnetInitial.R'
-  'example.R'
-
+    'buildCluster.R'
+    'computeDeduplicationFactors.R'
+    'computeDistrParams.R'
+    'utils.R'
+    'computeInitialPopulationBNB.R'
+    'computeIntialPopulationNB.R'
+    'computeIntialPopulationStateNB.R'
+    'computeRegionAreas.R'
+    'example.R'
+    'inference.R'
+    'readNnetInitial.R'
