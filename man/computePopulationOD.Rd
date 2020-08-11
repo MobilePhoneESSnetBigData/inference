@@ -2,7 +2,7 @@
 % Please edit documentation in R/computePopulationOD.R
 \name{computePopulationOD}
 \alias{computePopulationOD}
-\title{Computes the origin-destination matrices}
+\title{Computes the origin-destination matrices.}
 \usage{
 computePopulationOD(
   nt0,
@@ -45,5 +45,5 @@ A list with one element for each pair of time_from-time_to. Each element of the 
   time t are 'stats' and 'rnd_values'.
 }
 \description{
-Computes the origin-destination matrices
+Computes the origin-destination matrices for all pairs of time instants time_from-time_to.
 }

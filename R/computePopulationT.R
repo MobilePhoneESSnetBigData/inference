@@ -1,6 +1,6 @@
-#' @title Computes population counts as time t>t0
+#' @title Computes population counts at time  instants t >t0.
 #'
-#' @description Computes population counts for all times instants t > t0
+#' @description Computes the distribution of the population counts for all times instants t > t0.
 #'
 #' @param nt0 The population at t0.
 #'

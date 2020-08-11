@@ -1,6 +1,6 @@
-#' @title Computes the origin-destination matrices
+#' @title Computes the origin-destination matrices.
 #'
-#' @description Computes the origin-destination matrices
+#' @description Computes the origin-destination matrices for all pairs of time instants time_from-time_to.
 #'
 #' @param nt0 The population at t0.
 #'
