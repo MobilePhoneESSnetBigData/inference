@@ -5,19 +5,22 @@
 #' @param nnetODFileName the name of the file where the population moving from one region to another is stored. This is
 #'   an output of the \code{aggregation} package. Since this file could be large, it is stored compressed in zip format.
 #'
-#'
-#'
-#'
+#' @param zip If TRUE the file where where the population moving from one region to another is stored is a zipped csv
+#'   file, otherwise it is  simple csv file.
 #'
 #' @import data.table
 #' @import utils
 #' @export
-computeTau <- function(nnetODFileName) {
+computeTau <- function(nnetODFileName, zip) {
     
     if (!file.exists(nnetODFileName))
         stop(paste0(nnetODFileName, " does not exists!"))
     
-    nnetUZ<-unzip(nnetODFileName, exdir=tempdir())
+    if(zip ==TRUE) {
+      nnetUZ<-unzip(nnetODFileName, exdir=tempdir())
+    } else { 
+      nnetUZ = nnetODFileName
+    }
     nNetOD <- fread(
         nnetUZ,
         sep = ',',

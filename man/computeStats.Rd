@@ -4,7 +4,7 @@
 \alias{computeStats}
 \title{Computes statistics of the population count}
 \usage{
-computeStats(npop, ciprob, method)
+computeStats(npop, ciprob, method, by = "region")
 }
 \arguments{
 \item{npop}{A data table with the random values of the population counts generated according to a corresponding

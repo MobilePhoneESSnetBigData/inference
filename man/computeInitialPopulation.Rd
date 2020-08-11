@@ -25,8 +25,9 @@ values: \code{NegBin} (negative binomial distribution), \code{BetaNegBin} (beta 
 \code{STNegBin}  (state process negative binomial distribution).}
 
 \item{rndVal}{If FALSE the result return by this function will be a list with a single element, a data.table object
-with the following columns: \code{region, Mean, Mode, Median, SD, CV, CI_LOW, CI_HIGH}. If TRUE the list will have
-a second element which is a data.table object containing the random values generated for each region.}
+with the following columns: \code{region, Mean, Mode, Median, SD, Min, Max, Q1, Q3, IQR, CV, CI_LOW, CI_HIGH}. If
+TRUE the list will have a second element which is a data.table object containing the random values generated for
+each region.}
 
 \item{ciprob}{Value of probability of the CI (between 0 and 1) to be estimated. If NULL the default value is 0.89.}
 
@@ -36,9 +37,10 @@ a second element which is a data.table object containing the random values gener
 \value{
 A list object with one or two elements. If rndVal is FALSE the list will have a single element with
   descriptive statistics for the population count, which is a data.table object with the following columns:
-  \code{region, Mean, Mode, Median, SD, CV, CI_LOW, CI_HIGH}. If rndVal is TRUE the list will have a second element
-  which is a data.table object containing the random values generated for each region. The name of the two list
-  elements giving the descriptive statistics and random values for time t are 'stats' and 'rnd_values'.
+  \code{region, Mean, Mode, Median, Min, Max, Q1, Q3, IQR, SD, CV, CI_LOW, CI_HIGH}. If rndVal is TRUE the list will
+  have a second element which is a data.table object containing the random values generated for each region. The name
+  of the two list elements giving the descriptive statistics and random values for time t are 'stats' and
+  'rnd_values'.
 }
 \description{
 Computes the distribution of the population count at initial time instant using one of the three
