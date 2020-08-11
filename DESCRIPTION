@@ -27,6 +27,7 @@ Collate:
     'computeInitialPopulation.R'
     'computeTau.R'
     'computeStats.R'
+    'computePopulationOD.R'
     'computePopulationT.R'
     'computeRegionAreas.R'
     'example.R'

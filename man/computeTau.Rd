@@ -4,11 +4,14 @@
 \alias{computeTau}
 \title{Computes tau coefficient}
 \usage{
-computeTau(nnetODFileName)
+computeTau(nnetODFileName, zip)
 }
 \arguments{
 \item{nnetODFileName}{the name of the file where the population moving from one region to another is stored. This is
 an output of the \code{aggregation} package. Since this file could be large, it is stored compressed in zip format.}
+
+\item{zip}{If TRUE the file where where the population moving from one region to another is stored is a zipped csv
+file, otherwise it is  simple csv file.}
 }
 \description{
 Computes tau, a coefficient needed for the calculation of the population counts at time t>t0.

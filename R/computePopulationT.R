@@ -7,6 +7,9 @@
 #' @param nnetODFileName the name of the file where the population moving from one region to another is stored. This is
 #'   an output of the \code{aggregation} package.
 #'
+#' @param zip If TRUE the file where where the population moving from one region to another is stored is a zipped csv
+#'   file, otherwise it is  simple csv file.
+#'
 #' @param rndVal Controls if the random values generated for each t >t0 are returned or not in the result of this
 #'   function. If TRUE, the random values generated according to the corresponding distribution are returned in the
 #'   results, if FALSE only the summary statistics for each t>t0 and region are returned.
@@ -19,20 +22,21 @@
 #' @return A list with one element for each time instant (including t0). Each element of the list is also a list with
 #'   one or two elements, depending on the value of the rndVal parameter. If rndVal is TRUE there are two elements in
 #'   the list corresponding to time instant t. The first one is a data.table object with some descriptive statistics for
-#'   the population count at time t, containing the following columns:\code{region, Mean, Mode, Median, SD, CV, CI_LOW,
-#'   CI_HIGH}. The second one is a data.table object with the random values for population count generated for each
-#'   region, with the following columns: \code{region, iter, NPop}. If rndVal is FALSE the list for time instant t
-#'   contains only the first element previously mentioned. The name of the list element corresponding to time instant t
-#'   is 't' and the name of the two list elements giving the descriptive statistics and random values for time t are
-#'   'stats' and 'rnd_values'.
+#'   the population count at time t, containing the following columns:\code{region, Mean, Mode, Median, Min, Max, Q1,
+#'   Q3, IQR, SD, CV, CI_LOW, CI_HIGH}. The second one is a data.table object with the random values for population
+#'   count generated for each region, with the following columns: \code{region, iter, NPop}. If rndVal is FALSE the list
+#'   for time instant t contains only the first element previously mentioned. The name of the list element corresponding
+#'   to time instant t is 't' and the name of the two list elements giving the descriptive statistics and random values
+#'   for time t are 'stats' and 'rnd_values'.
 #'
 #' @import data.table
+#' @import utils
 #' @include computeStats.R
 #' @include computeTau.R
 #' @export
-computePopulationT <- function(nt0, nnetODFileName, rndVal = FALSE, ciprob = NULL, method = 'ETI') {
+computePopulationT <- function(nt0, nnetODFileName, zip = TRUE, rndVal = FALSE, ciprob = NULL, method = 'ETI') {
     
-    tau = computeTau(nnetODFileName)
+    tau = computeTau(nnetODFileName, zip)
     regs<-unique(nt0$region)
     n<-length(regs)
     
@@ -57,6 +61,7 @@ computePopulationT <- function(nt0, nnetODFileName, rndVal = FALSE, ciprob = NUL
 
 
     k=1
+    pb <- txtProgressBar(min = 0, max = length(times), style = 3)
     for(timeFrom in times[k:(length(times))]) {
         tempDT <- merge(tau[time_from == timeFrom], runningN,
                         by.x = c('region_from', 'iter'), by.y = c('region', 'iter'),
@@ -65,7 +70,7 @@ computePopulationT <- function(nt0, nnetODFileName, rndVal = FALSE, ciprob = NUL
         setnames(runningN, c('region_to'), c('region'))
         rm(tempDT)
         
-        #gc()
+        gc()
         
         stats_line <- computeStats(runningN, ciprob, method)
         k <- k + 1
@@ -75,9 +80,9 @@ computePopulationT <- function(nt0, nnetODFileName, rndVal = FALSE, ciprob = NUL
             result[[k]][[2]] <- runningN
             names(result[[k]]) <-c('stats', 'rnd_values')
         }
-        #k <- k + 1
+        setTxtProgressBar(pb, k)
     }
-
+    close(pb)
     return (result)
 }
 
