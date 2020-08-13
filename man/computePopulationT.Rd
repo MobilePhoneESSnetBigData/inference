@@ -2,7 +2,7 @@
 % Please edit documentation in R/computePopulationT.R
 \name{computePopulationT}
 \alias{computePopulationT}
-\title{Computes population counts as time t>t0}
+\title{Computes population counts at time  instants t >t0.}
 \usage{
 computePopulationT(
   nt0,
@@ -43,5 +43,5 @@ A list with one element for each time instant (including t0). Each element of th
   for time t are 'stats' and 'rnd_values'.
 }
 \description{
-Computes population counts for all times instants t > t0
+Computes the distribution of the population counts for all times instants t > t0.
 }

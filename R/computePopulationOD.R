@@ -1,6 +1,6 @@
-#' @title Computes the origin-destination matrices
+#' @title Computes the origin-destination matrices.
 #'
-#' @description Computes the origin-destination matrices
+#' @description Computes the origin-destination matrices for all pairs of time instants time_from-time_to.
 #'
 #' @param nt0 The population at t0.
 #'
@@ -28,8 +28,8 @@
 #'   time_from-time_to and each pair of regions region_from-region_to, with the following columns: \code{region_from,
 #'   region_to,iter, NPop}. If rndVal is FALSE the list for a pair of time instants time-from-time_to contains only the
 #'   first element previously mentioned. The name of the list element corresponding to a pair of time instants is
-#'   'time_from-time_to' and the name of the two list elements giving the descriptive statistics and random values for
-#'   time t are 'stats' and 'rnd_values'.
+#'   'time_from-time_to' and the name of the two list elements giving the descriptive statistics and random values are
+#'   'stats' and 'rnd_values'.
 #'
 #' @import data.table
 #' @import utils
