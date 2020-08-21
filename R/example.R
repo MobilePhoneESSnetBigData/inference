@@ -6,7 +6,7 @@
 #'
 #' 
 #' # set the folder where the necessary input files are stored and the prefix of the input file names.
-#' path      <- 'extdata'
+#' path      <- system.file('extData', package = 'inference')
 #'
 #' prefix <- 'postLocDevice'
 #'
