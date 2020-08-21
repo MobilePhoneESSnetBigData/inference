@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="Bogdan Oancea" />
+
+<meta name="date" content="2020-08-13" />
+
+<title>Introduction to inference package</title>
+
+<script>// Hide empty <a> tag within highlighted CodeBlock for screen reader accessibility (see https://github.com/jgm/pandoc/issues/6352#issuecomment-626106786) -->
+// v0.0.1
+// Written by JooYoung Seo (jooyoung@psu.edu) and Atsushi Yasumoto on June 1st, 2020.
+
+document.addEventListener('DOMContentLoaded', function() {
+  const codeList = document.getElementsByClassName("sourceCode");
+  for (var i = 0; i < codeList.length; i++) {
+    var linkList = codeList[i].getElementsByTagName('a');
+    for (var j = 0; j < linkList.length; j++) {
+      if (linkList[j].innerHTML === "") {
+        linkList[j].setAttribute('aria-hidden', 'true');
+      }
+    }
+  }
+});
+</script>
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css" data-origin="pandoc">
+code.sourceCode > span { display: inline-block; line-height: 1.25; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Introduction to inference package</h1>
+<h4 class="author">Bogdan Oancea</h4>
+<h4 class="date">2020-08-13</h4>
+
+
+
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>This package focuses on the computation of the probability distribution for the number of individuals in the target population conditioned on the number of individuals detected by the network and some auxiliary information which is absolutely necessary to provide a meaningful inference on the target population. This auxiliary information will be basically telecommunication market information in the form of penetration rates (ratio of number of devices to number of individuals in the target population) and register-based population data. This information will provide the necessary link between the number of individuals at the network level and at the target population level. Register-based population figures offer information about society from a concrete demographic perspective (residential population) with a given degree of spatial and time breakdown while mobile network data provides the opportunity to reach unprecedented spatial and time scales as well as a complementary view on the population (present population). We propose to use hierarchical models (i) to produce probability distributions, (ii) to integrate data sources, and (iii) to account for the uncertainty and the differences of concepts and scales.</p>
+<p>We use a two-staged modelling approach. Firstly, we assume that there exists an initial time instant <span class="math inline">\(t_{0}\)</span> in which both the register-based target population and the actual population can be assimilated in terms of their physical location. This assumption will trigger the first stage in which we compute a probability distribution for the number of individuals <span class="math inline">\(\textbf{N}_{t_{0}}\)</span> of the target population in all regions in terms of the number of individuals <span class="math inline">\(\mathbf{N}_{0}^{\textrm{net}}\)</span> detected by the network and the auxiliary information. Secondly, we assume that individuals displace over the geographical territory independently of the MNO. This assumption will trigger the second stage in which we provide a probability distribution for the number of individuals <span class="math inline">\(\mathbf{N}_{t}\)</span> for later times <span class="math inline">\(t&gt; t_{0}\)</span>. A detailed description of the methodological approach can be found in <span class="citation">David Salgado, Luis Sanguiao, Sandra Barragan, Bogdan Oancea, Milena Suarez-Castillo (2019)</span> and in <span class="citation">David Salgado, Luis Sanguiao, Bogdan Oancea, Sandra Barragan, Marian Necula (2020)</span>.</p>
+</div>
+<div id="population-at-the-initial-time-t_0" class="section level1">
+<h1>Population at the initial time <span class="math inline">\(t_0\)</span></h1>
+<div id="methodological-aspects" class="section level2">
+<h2>Methodological aspects</h2>
+<p>In this section we drop the time index for the easy of notation. The auxiliary information is provided by the penetration rates <span class="math inline">\(P_{r}^{\textrm{net}}\)</span> of the MNO and the register-based population <span class="math inline">\(N_{r}^{\textrm{reg}}\)</span> at each region <span class="math inline">\(r\)</span>. We combine <span class="math inline">\(N_{r}^{\textrm{net}}\)</span>, <span class="math inline">\(P_{r}\)</span>, and <span class="math inline">\(N_{r}^{\textrm{reg}}\)</span> to produce the probability distribution for <span class="math inline">\(\mathbf{N}=(N_{1},\dots,N_{R})^{T}\)</span> following the multilevel approach used in the species abundance problem in ecology <span class="citation">Royle and Dorazio (2009)</span>. This approach clearly distinguishes between the state and the observation process. The state process is the underlying dynamical process of the population and the observation process is the procedure by which we get information about the location and timestamp of each individual in the target population.</p>
+<p>The first level makes use of the detection probability <span class="math inline">\(p_{r}\)</span> for each region <span class="math inline">\(r\)</span>. We model</p>
+<p><span class="math display">\[
+N_{r}^{\textrm{net}}\simeq\textrm{Binomial}\left(N_{r}, p_{r}\right).
+\]</span> making the assumption that the probability of detection <span class="math inline">\(p_r\)</span> for all individuals in region <span class="math inline">\(r\)</span> is the same and we approximate it with the penetration rate <span class="math inline">\(P_r\)</span> of the MNO in region <span class="math inline">\(r\)</span>. The posterior probability distribution for <span class="math inline">\(N_{r}\)</span> in terms of <span class="math inline">\(N^{\textrm{net}}_{r}\)</span> will be given by</p>
+<p><span class="math display">\[
+\mathbb{P}\left(N_{r}|N_{r}^{\textrm{net}}\right)=\left\{\begin{array}{ll}
+0 &amp; \textrm{ if } N_{r} &lt; N_{r}^{\textrm{net}},\\
+\textrm{negbin}\left(N_{r} - N_{r}^{\textrm{net}};1 - p_{r}, N_{r}^{\textrm{net}}+1\right) &amp; \textrm{ if } N_{r} \geq N_{r}^{\textrm{net}},
+\end{array}\right.
+\]</span></p>
+<p>where <span class="math inline">\(\textrm{negbin}\left(k; p, r\right)\equiv\binom{k+r-1}{k}p^{k}(1-p)^{r}\)</span> denotes the probability mass function of a negative binomial random variable of values <span class="math inline">\(k\geq 0\)</span> with parameters <span class="math inline">\(p\)</span> and <span class="math inline">\(r\)</span>. Once we have a distribution, we can provide a point estimators, a posterior variance, a posterior coefficient of variation, a credible interval, and as many indicators as possible computed from the distribution. In our implementation we compute the mean, mode and median as point estimators, the standard deviation, coefficient of variation the first and third quartile, the interquartile range and the credible intervals.</p>
+<p>We introduce now the second level and model the detection probability <span class="math inline">\(p_{kr}\)</span> per individual <span class="math inline">\(k\)</span> in the target population as <span class="math inline">\(p_{kr}=p_r+noise\)</span>. We propose to implement this idea modeling <span class="math inline">\(p_{r}\simeq\textrm{Beta}\left(\alpha_{r},\beta_{r}\right)\)</span> and choosing the hyperparameters <span class="math inline">\(\alpha_{r}\)</span> and <span class="math inline">\(\beta_{r}\)</span> according to the penetration rates <span class="math inline">\(P_{r}^{\textrm{net}}\)</span> and the register-based population figures <span class="math inline">\(N_{r}^{\textrm{reg}}\)</span>. The penetration rate is also subjectec to the problem of device deduplication. We define:</p>
+<p><span class="math display">\[\Omega_{r}^{(1)}=\frac{\sum_{d=1}^{D}\bar{\gamma}_{dr}\cdot p_{d}^{(1)}}{\sum_{d=1}^{D}\bar{\gamma}_{dr}},\\
+\Omega_{r}^{(2)}=\frac{\sum_{d=1}^{D}\bar{\gamma}_{dr}\cdot p_{d}^{(2)}}{\sum_{d=1}^{D}\bar{\gamma}_{dr}}\]</span>.</p>
+<p>with <span class="math inline">\(p_{d}\)</span> being the duplicity probabilities and <span class="math inline">\(\bar{\gamma}_{dr}\)</span> the posterior location probabilities in region <span class="math inline">\(r\)</span> for device <span class="math inline">\(d\)</span>. The deduplicated rate is defined as:</p>
+<p><span class="math display">\[\tilde{P}_{r}^{\textrm{net}}=\left(\Omega_{r}^{(1)} +\frac{\Omega_{r}^{(2)}}{2}\right)\cdot P_{r}^{\textrm{net}}\]</span>.</p>
+<p>Denoting by <span class="math inline">\(N_{r}^{\textrm{reg}}\)</span> the population of region <span class="math inline">\(r\)</span> according to an external population register, we fix</p>
+<p><span class="math display">\[\alpha_{r}+\beta_{r}  =  N_{r}^{\textrm{reg}},\\
+\frac{\alpha_{r}}{\alpha_{r} + \beta_{r}}  =  \tilde{P}_{r}^{\textrm{net}}\]</span></p>
+<p>We can now compute the posterior distribution for <span class="math inline">\(N_r\)</span>:</p>
+<p><span class="math display">\[
+\mathbb{P}\left(N_{r}|N_{r}^{\textrm{net}}\right) = \left\{\begin{array}{ll}
+0 &amp; \textrm{ if } N_{r} &lt; N_{r}^{\textrm{net}},\\
+\mathrm{betaNegBin}\left(N_{r}-N_{r}^{\textrm{net}};N_{r}^{\textrm{net}} + 1, \alpha_{r} - 1, \beta_{r}\right) &amp; \textrm{ if } N_{r} \geq N_{r}^{\textrm{net}}
+\end{array}\right.
+\]</span></p>
+<p>It is a displaced beta negative binomial distribution (<span class="math inline">\(\textrm{betaNegBin}(k; s, \alpha, \beta)\equiv\frac{\Gamma(k+s)}{k!\Gamma(s)}\frac{\mathrm{B}(\alpha + s,\beta + k)}{\mathrm{B}(\alpha,\beta)}\)</span>) with support in <span class="math inline">\(N_{r} \geq N_{r}^{\textrm{net}}\)</span> and parameters <span class="math inline">\(s = N_{r}^{\textrm{net}} + 1\)</span>, <span class="math inline">\(\alpha = \alpha_{r} - 1\)</span> and <span class="math inline">\(\beta=\beta_{r}\)</span>.</p>
+<p>When <span class="math inline">\(\alpha_{r},\beta_{r}\gg 1\)</span> (i.e., when <span class="math inline">\(\min(\tilde{P}_{r}^{\textrm{net}}, 1- \tilde{P}_{r}^{\textrm{net}})\cdot N_{r}^{\textrm{reg}}\gg 1\)</span>) the beta negative binomial distribution  reduces to the negative binomial distribution</p>
+<p><span class="math display">\[
+\mathbb{P}\left(N_{r}|N_{r}^{\textrm{net}}\right)=\left\{\begin{array}{ll}
+0 &amp; \textrm{ if } N_{r} &lt; N_{r}^{\textrm{net}},\\
+\mathrm{negbin}\left(N_{r}-N_{r}^{\textrm{net}};\frac{\beta_{r}}{\alpha_{r} +\beta_{r} - 1}, N_{r}^{\textrm{net}} + 1\right)&amp; \textrm{ if } N_{r} \geq N_{r}^{\textrm{net}}.
+\end{array}\right.\]</span></p>
+<p>Note also that <span class="math inline">\(\frac{\beta_{r}}{\alpha_{r} + \beta_{r} -1}\approx 1 - \tilde{P}_{r}^{\textrm{net}}\)</span> so that in this case we do not need the register-based population.</p>
+<p>We can also introduce the state process and model the number of individuals <span class="math inline">\(N_r\)</span> in region <span class="math inline">\(r\)</span> of the target population as a Poisson-distributed random variable: <span class="math display">\[
+N_{r}\simeq\textrm{Poisson}\left(A_{r}\sigma_{r}\right),
+\]</span> where <span class="math inline">\(\sigma_{r}\)</span> stands for the population density of region <span class="math inline">\(r\)</span> and <span class="math inline">\(A_{r}\)</span> denotes the area of region <span class="math inline">\(r\)</span>. Next, we introduce the following hierarchy: <span class="math display">\[
+\begin{array}{ll}
+N_{r}^{\textrm{net}} &amp; \mkern-18mu\simeq\mkern-18mu &amp; \textrm{Bin}\left(N_{r}, p_{r}\right),\quad \textrm{ for all } r=1,\dots,R,\\
+N_{r} &amp;\mkern-8mu\simeq\mkern-8mu &amp; \textrm{Poisson}\left(A_{r}\sigma_{r}\right),\quad \textrm{ for all } r=1,\dots,R,\\
+p_{r} &amp; \mkern-18mu\simeq\mkern-18mu &amp; \mathrm{Beta}\left(\alpha_{r}, \beta_{r}\right),\quad \textrm{ for all } r=1,\dots,R,\\
+\sigma_{r} &amp; \mkern-8mu\simeq\mkern-8mu &amp; \mathrm{Gamma}\left(1 + \zeta_{r}, \theta_{r}\right),\quad \textrm{ for all } r=1,\dots,R,
+\end{array}
+\]</span> The hyperparameters <span class="math inline">\(\theta_{r}\)</span> and <span class="math inline">\(\zeta_{r}\)</span> are given by: <span class="math display">\[
+\theta_{r}(\Delta\sigma_{r},\epsilon_{r})  =  \frac{\sigma_{r}^{\textrm{reg}}}{2}\left(1+ \frac{\Delta\sigma_{r}}{\sigma_{r}^{\textrm{reg}}}\right)\left[\sqrt{1 + \left(\frac{2\epsilon_{r}}{1+ \frac{\Delta\sigma_{r}}{\sigma_{r}^{\textrm{reg}}}}\right)^{2}}-1\right],\nonumber\\
+\zeta_{r}(\Delta\sigma_{r},\epsilon_{r})  = \frac{2}{\sqrt{1+\left(\frac{2\epsilon_{r}}{1+\frac{\Delta\sigma_{r}}{\sigma_{r}^{\textrm{reg}}}}\right)^{2}}-1}.
+\]</span> where where <span class="math inline">\(\epsilon_{r}\)</span> can be viewed as the coefficient of variation for <span class="math inline">\(\sigma_{r}^{\textrm{reg}}\)</span> and <span class="math inline">\(\Delta\sigma_{r}\)</span> can be interpreted as the bias for <span class="math inline">\(\sigma_{r}^{\textrm{reg}}\)</span>.</p>
+</div>
+<div id="implementation-step-by-step" class="section level2">
+<h2>Implementation step by step</h2>
+<p>Let see now how to compute target population counts using all three method mentioned above. First, we read the files with the posterior location probabilities for each device (coming from <em>destim</em> package), the file with the duplicity probabilities (computed with <em>deduplication</em> package) and file defining the regions as set of tiles. Using these information we can compute the deduplication factors:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw">library</span>(inference, <span class="dt">warn.conflicts =</span> <span class="ot">FALSE</span>)</span>
+<span id="cb1-2"><a href="#cb1-2"></a></span>
+<span id="cb1-3"><a href="#cb1-3"></a>path      &lt;-<span class="st"> &#39;extdata&#39;</span></span>
+<span id="cb1-4"><a href="#cb1-4"></a></span>
+<span id="cb1-5"><a href="#cb1-5"></a>prefix &lt;-<span class="st"> &#39;postLocDevice&#39;</span></span>
+<span id="cb1-6"><a href="#cb1-6"></a>postLocPath &lt;-<span class="st"> </span><span class="kw">system.file</span>(path, <span class="dt">package =</span> <span class="st">&#39;inference&#39;</span>)</span>
+<span id="cb1-7"><a href="#cb1-7"></a></span>
+<span id="cb1-8"><a href="#cb1-8"></a></span>
+<span id="cb1-9"><a href="#cb1-9"></a>dpFileName &lt;-<span class="st"> </span><span class="kw">system.file</span>(path, <span class="st">&#39;duplicity.csv&#39;</span>, <span class="dt">package =</span> <span class="st">&#39;inference&#39;</span>)</span>
+<span id="cb1-10"><a href="#cb1-10"></a>rgFileName &lt;-<span class="st"> </span><span class="kw">system.file</span>(path, <span class="st">&#39;regions.csv&#39;</span>, <span class="dt">package =</span> <span class="st">&#39;inference&#39;</span>)</span>
+<span id="cb1-11"><a href="#cb1-11"></a></span>
+<span id="cb1-12"><a href="#cb1-12"></a>omega_r &lt;-<span class="st"> </span><span class="kw">computeDeduplicationFactors</span>(<span class="dt">dupFileName =</span> dpFileName,</span>
+<span id="cb1-13"><a href="#cb1-13"></a>                                       <span class="dt">regsFileName =</span> rgFileName,</span>
+<span id="cb1-14"><a href="#cb1-14"></a>                                       <span class="dt">postLocPrefix =</span> prefix,</span>
+<span id="cb1-15"><a href="#cb1-15"></a>                                       <span class="dt">postLocPath =</span> postLocPath)</span>
+<span id="cb1-16"><a href="#cb1-16"></a><span class="kw">head</span>(omega_r)</span></code></pre></div>
+<pre><code>   region    omega1     omega2
+1:      4 0.9786578 0.02134223
+2:      6 0.7116936 0.28830636
+3:      9 0.6520971 0.34790293
+4:      3 0.7876368 0.21236317
+5:     10 0.7199611 0.28003894
+6:      8 0.8367990 0.16320103</code></pre>
+<p>Then, we can compute the parameters needed by the distribution functions used to estimate the target population. The  function computes the parameters needed by all three distribution presented in the previous section: <span class="math inline">\(\alpha_r\)</span>, <span class="math inline">\(\beta_r\)</span>, <span class="math inline">\(\theta_{r}\)</span> and <span class="math inline">\(\zeta_{r}\)</span>. The computations are performed under the assumption that <span class="math inline">\(\Delta\sigma_{r} = 0\)</span> and <span class="math inline">\(\epsilon_{r} = 1e-5\)</span> unless the user specify other values for them.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>pRFileName &lt;-<span class="st"> </span><span class="kw">system.file</span>(path, <span class="st">&#39;pop_reg.csv&#39;</span>, <span class="dt">package =</span> <span class="st">&#39;inference&#39;</span>)</span>
+<span id="cb3-2"><a href="#cb3-2"></a>pRateFileName &lt;-<span class="st"> </span><span class="kw">system.file</span>(path, <span class="st">&#39;pnt_rate.csv&#39;</span>, <span class="dt">package =</span> <span class="st">&#39;inference&#39;</span>)</span>
+<span id="cb3-3"><a href="#cb3-3"></a>grFileName &lt;-<span class="st"> </span><span class="kw">system.file</span>(path, <span class="st">&#39;grid.csv&#39;</span>, <span class="dt">package =</span> <span class="st">&#39;inference&#39;</span>)</span>
+<span id="cb3-4"><a href="#cb3-4"></a>params &lt;-<span class="st"> </span><span class="kw">computeDistrParams</span>(<span class="dt">omega =</span> omega_r,</span>
+<span id="cb3-5"><a href="#cb3-5"></a>                             <span class="dt">popRegFileName =</span> pRFileName,</span>
+<span id="cb3-6"><a href="#cb3-6"></a>                             <span class="dt">pntRateFileName =</span> pRateFileName,</span>
+<span id="cb3-7"><a href="#cb3-7"></a>                             <span class="dt">regsFileName =</span> rgFileName,</span>
+<span id="cb3-8"><a href="#cb3-8"></a>                             <span class="dt">gridFileName =</span> grFileName)</span>
+<span id="cb3-9"><a href="#cb3-9"></a><span class="kw">head</span>(params)</span></code></pre></div>
+<pre><code>   region    omega1     omega2   pntRate regionArea_km2 N0 dedupPntRate    alpha     beta        theta       zeta       Q
+1:      1 0.6878592 0.31214077 0.3684211           10.5 38    0.3109215 11.81502 26.18498 3.619048e-10 9999999173 3.8e-09
+2:      2 0.8991648 0.10083522 0.4000000            7.5 55    0.3798330 20.89081 34.10919 7.333334e-10 9999999173 5.5e-09
+3:      3 0.7876368 0.21236317 0.4153846           12.0 65    0.3712784 24.13310 40.86690 5.416667e-10 9999999173 6.5e-09
+4:      4 0.9786578 0.02134223 0.4615385           10.0 39    0.4566134 17.80792 21.19208 3.900000e-10 9999999173 3.9e-09
+5:      5 0.6734889 0.32651114 0.3666667           10.0 60    0.3068063 18.40838 41.59162 6.000000e-10 9999999173 6.0e-09
+6:      6 0.7116936 0.28830636 0.3720930           12.5 43    0.3184546 13.69355 29.30645 3.440000e-10 9999999173 4.3e-09</code></pre>
+<p>We can compute now the population count distribution at <span class="math inline">\(t_0\)</span> using <em>computeInitialPopulation</em> function. The distribution used to compute the population count is specified using <em>popDistr</em> parameter which can have three values <em>BetaNegBin</em>, <em>NegBin</em> or <em>STNegBin</em>. This function also needs the population count detected by the network computed using the <em>aggregation</em> package and read from a <em>csv</em> file. The result of the <em>computeInitialPopulation</em> is a list object with one or two elements. If the parameter <em>rndVal</em> is <em>FALSE</em> the list will have a single element with descriptive statistics for the population count, which is a data.table object with the following columns: <em>{region, Mean, Mode, Median, Min, Max, Q1, Q3, IQR, SD, CV, CI_LOW, CI_HIGH}</em>. If <em>rndVal</em> is <em>TRUE</em> the list will have a second element which is a data.table object containing the random values generated for each region. The name of the two list elements giving the descriptive statistics and random values for time <span class="math inline">\(t\)</span> are <em>stats</em> and <em>rnd_values</em>.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>nFileName &lt;-<span class="st"> </span><span class="kw">system.file</span>(path, <span class="st">&#39;nnet.csv&#39;</span>, <span class="dt">package =</span> <span class="st">&#39;inference&#39;</span>)</span>
+<span id="cb5-2"><a href="#cb5-2"></a>nnet &lt;-<span class="st"> </span><span class="kw">readNnetInitial</span>(nFileName)</span>
+<span id="cb5-3"><a href="#cb5-3"></a></span>
+<span id="cb5-4"><a href="#cb5-4"></a><span class="co"># Beta Negative Binomial distribution</span></span>
+<span id="cb5-5"><a href="#cb5-5"></a>n_bnb &lt;-<span class="st"> </span><span class="kw">computeInitialPopulation</span>(<span class="dt">nnet =</span> nnet, </span>
+<span id="cb5-6"><a href="#cb5-6"></a>                                  <span class="dt">params =</span> params, </span>
+<span id="cb5-7"><a href="#cb5-7"></a>                                  <span class="dt">popDistr =</span> <span class="st">&#39;BetaNegBin&#39;</span>, </span>
+<span id="cb5-8"><a href="#cb5-8"></a>                                  <span class="dt">rndVal =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb5-9"><a href="#cb5-9"></a></span>
+<span id="cb5-10"><a href="#cb5-10"></a><span class="kw">head</span>(n_bnb<span class="op">$</span>stats)</span>
+<span id="cb5-11"><a href="#cb5-11"></a><span class="kw">head</span>(n_bnb<span class="op">$</span>rnd_values)</span></code></pre></div>
+<p>A possible result looks like:</p>
+<pre><code>     region Mean Mode Median Min Max Q1 Q3 IQR    SD    CV CI_LOW CI_HIGH
+[1,]      1   43   41     39  13 136 31 50  19 17.74 41.55  22.00   77.00
+[2,]      2   60   57     58  24 142 49 69  20 16.19 26.98  38.00   87.53
+[3,]      3   80   68     77  42 176 66 92  25 19.32 24.07  54.97  113.50
+[4,]      4   38   33     37  14 102 30 44  14 11.41 29.86  23.50   58.00
+[5,]      5   77   64     73  26 182 62 89  28 23.19 30.02  47.97  120.06
+[6,]      6   49   36     46  14 140 36 58  22 18.41 37.59  26.00   82.03
+</code></pre>
+<p>and</p>
+<pre><code>region    N NPop
+1:      1 11.0 46.0
+2:      1  9.0 42.0
+3:      1 13.0 52.0
+4:      1 12.0 33.0
+5:      1 12.0 35.0
+6:      1 12.5 30.5</code></pre>
+<p>Here <em>N</em> is the population count detected by the network and <em>NPop</em> is the target population count.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a><span class="co"># Negative Binomial distribution</span></span>
+<span id="cb8-2"><a href="#cb8-2"></a>n_nb &lt;-<span class="st"> </span><span class="kw">computeInitialPopulation</span>(<span class="dt">nnet =</span> nnet, </span>
+<span id="cb8-3"><a href="#cb8-3"></a>                                 <span class="dt">params =</span> params,</span>
+<span id="cb8-4"><a href="#cb8-4"></a>                                 <span class="dt">popDistr =</span> <span class="st">&#39;NegBin&#39;</span>, </span>
+<span id="cb8-5"><a href="#cb8-5"></a>                                 <span class="dt">rndVal =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb8-6"><a href="#cb8-6"></a></span>
+<span id="cb8-7"><a href="#cb8-7"></a><span class="kw">head</span>(n_nb<span class="op">$</span>stats)</span>
+<span id="cb8-8"><a href="#cb8-8"></a><span class="kw">head</span>(n_nb<span class="op">$</span>rnd_values)</span></code></pre></div>
+<pre><code>     region Mean Mode Median Min Max Q1 Q3 IQR    SD    CV CI_LOW CI_HIGH
+[1,]      1   40   34     39  12  82 32 46  14 11.23 28.40  23.94   59.00
+[2,]      2   58   51     57  27 100 50 65  15 11.89 20.46  41.00   80.00
+[3,]      3   79   76     78  48 130 70 86  16 12.63 16.08  60.00  100.03
+[4,]      4   37   36     36  17  66 32 42  10  7.95 21.52  25.00   50.50
+[5,]      5   75   75     74  33 128 64 84  20 15.10 20.21  51.50  100.50
+[6,]      6   44   43     44  18  84 36 51  14 10.82 24.41  28.00   62.50</code></pre>
+<pre><code>   region    N NPop
+1:      1 11.0 24.0
+2:      1  9.0 33.0
+3:      1 13.0 61.0
+4:      1 12.0 32.0
+5:      1 12.0 49.0
+6:      1 12.5 79.5</code></pre>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a><span class="co"># State process Negative Binomial distribution</span></span>
+<span id="cb11-2"><a href="#cb11-2"></a>n_stnb &lt;-<span class="st"> </span><span class="kw">computeInitialPopulation</span>(<span class="dt">nnet =</span> nnet, </span>
+<span id="cb11-3"><a href="#cb11-3"></a>                                  <span class="dt">params =</span> params,</span>
+<span id="cb11-4"><a href="#cb11-4"></a>                                  <span class="dt">popDistr=</span> <span class="st">&#39;STNegBin&#39;</span>, </span>
+<span id="cb11-5"><a href="#cb11-5"></a>                                  <span class="dt">rndVal =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb11-6"><a href="#cb11-6"></a></span>
+<span id="cb11-7"><a href="#cb11-7"></a><span class="kw">head</span>(n_stnb<span class="op">$</span>stats)</span>
+<span id="cb11-8"><a href="#cb11-8"></a><span class="kw">head</span>(n_stnb<span class="op">$</span>rnd_values)</span></code></pre></div>
+<pre><code>     region Mean Mode Median Min Max Q1 Q3 IQR   SD    CV CI_LOW CI_HIGH
+[1,]      1   37   36     37  22  55 34 41   8 5.45 14.71  29.00   45.53
+[2,]      2   55   54     54  36  73 51 59   8 6.09 11.10  45.00   64.50
+[3,]      3   69   68     68  49  96 64 74   9 6.72  9.74  58.00   80.00
+[4,]      4   37   36     37  22  56 33 40   7 5.13 13.95  29.00   45.00
+[5,]      5   63   62     63  42  88 58 68   9 6.89 10.91  52.00   74.50
+[6,]      6   42   40     42  26  60 38 46   8 5.51 13.05  33.97   51.00</code></pre>
+<pre><code>   region    N NPop
+1:      1 11.0 36.0
+2:      1  9.0 33.0
+3:      1 13.0 40.0
+4:      1 12.0 42.0
+5:      1 12.0 36.0
+6:      1 12.5 36.5</code></pre>
+</div>
+</div>
+<div id="the-dynamical-approach-population-at-tt_0" class="section level1">
+<h1>The dynamical approach: population at <span class="math inline">\(t&gt;t_0\)</span></h1>
+<div id="methodological-aspects-1" class="section level2">
+<h2>Methodological aspects</h2>
+<p>Currently, we consider only  populations, i.e. neither individuals nor devices enter into or leave the territory under analysis along the whole time period. We begin by considering a balance equation and denote by <span class="math inline">\(N_{t,rs}\)</span> the number of individuals moving from region <span class="math inline">\(s\)</span> to region <span class="math inline">\(r\)</span> in the time interval <span class="math inline">\((t-1, t)\)</span>. Then, we can write: <span class="math display">\[
+N_{tr} =  N_{t-1r}+\sum_{\substack{r_{t}=1\\r_{t}\neq r}}^{N_{T}}N_{t,rr_{t}} - \sum_{\substack{r_{t}=1\\r_{t}\neq r}}^{N_{r}}N_{t,r_{t}r}\nonumber\\
+  =  \sum_{r_{t}= 1}^{N_{T}}\tau_{t,rr_{t}}\cdot N_{t-1r_{t}},
+\]</span> where we have defined <span class="math inline">\(\tau_{t,rs}=\frac{N_{t,rs}}{N_{t-1s}}\)</span> (<span class="math inline">\(0\)</span> if <span class="math inline">\(N_{t-1s} = 0\)</span>). Notice that <span class="math inline">\(\tau_{t,rs}\)</span> can be interpreted as an aggregate transition probability from region <span class="math inline">\(s\)</span> to region <span class="math inline">\(r\)</span> at time interval <span class="math inline">\((t-1, t)\)</span> in the target population. Thus, we can use <span class="math inline">\(\tau_{t,rs}^{\textrm{net}}\equiv\frac{N^{\textrm{net}}_{t,rs}}{N^{\textrm{net}}_{t-1s}}\)</span> to model <span class="math inline">\(\tau_{t,rs}\)</span>. In particular, as our first choice we shall postulate <span class="math inline">\(\tau_{t,rs}=\tau_{t,rs}^{\textrm{net}}\)</span>. The probability distributions of <span class="math inline">\(N^{\textrm{net}}_{s t-1}\)</span> and <span class="math inline">\([\mathbf{N}^{\textrm{net}}_{t}]_{sr} = N_{t,rs}^{\textrm{net}}\)</span> were indeed already computed in the <em>aggregation</em> package.</p>
+</div>
+<div id="implementation-step-by-step-1" class="section level2">
+<h2>Implementation step by step</h2>
+<p>We show now how to compute the population count distribution at time instants <span class="math inline">\(t &gt; t_0\)</span>. We will use the target population count estimated at <span class="math inline">\(t_0\)</span> using the three distributions already mentioned: Beta Negative Binomial, Negative Binomial and the state process Negative Binomial. Target population distribution is computed using <em>computePopulationT</em> function. As inputs it needs the population distribution at <span class="math inline">\(t_0\)</span> (here we will use all three previous results), the name of the file with the population moving from one region to another and an optional parameter <em>rndVal</em>. The result of this function is a list with one element for each time instant (including <span class="math inline">\(t_0\)</span>). Each element of the list is also a list with one or two elements, depending on the value of the <em>rndVal</em> parameter. If <em>rndVal</em> is <em>TRUE</em> there are two elements in the list corresponding to time instant <span class="math inline">\(t\)</span>. The first one is a data.table object with some descriptive statistics for the population count at time <span class="math inline">\(t\)</span>, containing the following columns:<em>{region, Mean, Mode, Median, Min, Max, Q1, Q3, IQR, SD, CV, CI_LOW, CI_HIGH}</em>. The second one is a data.table object with the random values for population count generated for each region, with the following columns: <em>{region, iter, NPop}</em>. If <em>rndVal</em> is <em>FALSE</em> the list for time instant <span class="math inline">\(t\)</span> contains only the first element previously mentioned. The name of the list element corresponding to time instant <span class="math inline">\(t\)</span> is <em>t</em> and the name of the two list elements giving the descriptive statistics and random values are <em>stats</em> and <em>rnd_values</em>.</p>
+<p>First, set the name of the file with the population moving from one region to another (this file is an output of the <em>aggregation</em> package). Notice that this file is stored as a zip archive because it could be very large.</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a>nnetODFile &lt;-<span class="st"> </span><span class="kw">system.file</span>(path, <span class="st">&#39;nnetOD.zip&#39;</span>, <span class="dt">package =</span> <span class="st">&#39;inference&#39;</span>)</span></code></pre></div>
+<p>Then, we call <em>computePopulationT</em>:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a><span class="co"># Beta Negative Binomial distribution</span></span>
+<span id="cb15-2"><a href="#cb15-2"></a>nt_bnb &lt;-<span class="st"> </span><span class="kw">computePopulationT</span>(<span class="dt">nt0 =</span> n_bnb<span class="op">$</span>rnd_values, </span>
+<span id="cb15-3"><a href="#cb15-3"></a>                             <span class="dt">nnetODFileName =</span> nnetODFile, </span>
+<span id="cb15-4"><a href="#cb15-4"></a>                             <span class="dt">rndVal =</span> <span class="ot">TRUE</span>)</span></code></pre></div>
+<p>To display the results we select a random time instant first and then display the results for it:</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a></span>
+<span id="cb16-2"><a href="#cb16-2"></a>times &lt;-<span class="st"> </span><span class="kw">names</span>(nt_bnb)</span>
+<span id="cb16-3"><a href="#cb16-3"></a>t &lt;-<span class="st"> </span><span class="kw">sample</span>(<span class="dv">1</span><span class="op">:</span><span class="kw">length</span>(times), <span class="dt">size =</span> <span class="dv">1</span>)</span>
+<span id="cb16-4"><a href="#cb16-4"></a>t</span>
+<span id="cb16-5"><a href="#cb16-5"></a><span class="kw">head</span>(nt_bnb[[t]]<span class="op">$</span>stats)</span>
+<span id="cb16-6"><a href="#cb16-6"></a><span class="kw">head</span>(nt_bnb[[t]]<span class="op">$</span>rnd_values)</span></code></pre></div>
+<p>A possible results is displayed below:</p>
+<pre><code> 62
+ 
+      region Mean Mode Median Min Max  Q1  Q3 IQR    SD    CV CI_LOW CI_HIGH
+ [1,]      1   35   33     33   9  88  27  41  14 11.89 34.35     18      56
+ [2,]      2   67   60     65  31 142  57  76  19 14.82 22.16     46      93
+ [3,]      3  166  161    164  96 259 150 181  31 23.38 14.11    131     205
+ [4,]      4   41   32     40  14  93  33  48  15 11.08 27.09     25      60
+ [5,]      5   81   80     80  45 137  70  89  19 15.07 18.70     58     106
+ [6,]      6   23   19     22   2  52  17  27  10  7.66 33.73     12      36
+
+ 
+    region iter NPop
+1:      1    1   52
+2:      2    1   57
+3:      3    1  184
+4:      4    1   49
+5:      5    1   80
+6:      6    1   33
+ </code></pre>
+<p>The <em>iter</em> column show the index of the random value generated for a region. The total number of random values generated for each region equals the same number used in the <em>aggregation</em> package that provides the input for this function.</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a><span class="co"># Negative Binomial distribution</span></span>
+<span id="cb18-2"><a href="#cb18-2"></a>nt_nb &lt;-<span class="st"> </span><span class="kw">computePopulationT</span>(<span class="dt">nt0 =</span> n_nb<span class="op">$</span>rnd_values, </span>
+<span id="cb18-3"><a href="#cb18-3"></a>                            <span class="dt">nnetODFileName =</span> nnetODFile, </span>
+<span id="cb18-4"><a href="#cb18-4"></a>                            <span class="dt">rndVal =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb18-5"><a href="#cb18-5"></a></span>
+<span id="cb18-6"><a href="#cb18-6"></a><span class="co"># to display results, select a random time instant</span></span>
+<span id="cb18-7"><a href="#cb18-7"></a>times &lt;-<span class="st"> </span><span class="kw">names</span>(nt_nb)</span>
+<span id="cb18-8"><a href="#cb18-8"></a>t &lt;-<span class="st"> </span><span class="kw">sample</span>(<span class="dv">1</span><span class="op">:</span><span class="kw">length</span>(times), <span class="dt">size =</span> <span class="dv">1</span>)</span>
+<span id="cb18-9"><a href="#cb18-9"></a>t</span>
+<span id="cb18-10"><a href="#cb18-10"></a><span class="kw">head</span>(nt_nb[[t]]<span class="op">$</span>stats)</span>
+<span id="cb18-11"><a href="#cb18-11"></a><span class="kw">head</span>(nt_nb[[t]]<span class="op">$</span>rnd_values)</span></code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1"></a><span class="co"># State process Negative Binomial distribution</span></span>
+<span id="cb19-2"><a href="#cb19-2"></a>nt_stnb &lt;-<span class="st"> </span><span class="kw">computePopulationT</span>(<span class="dt">nt0 =</span> n_stnb<span class="op">$</span>rnd_values, </span>
+<span id="cb19-3"><a href="#cb19-3"></a>                              <span class="dt">nnetODFileName =</span> nnetODFile, </span>
+<span id="cb19-4"><a href="#cb19-4"></a>                              <span class="dt">rndVal =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb19-5"><a href="#cb19-5"></a></span>
+<span id="cb19-6"><a href="#cb19-6"></a><span class="co"># to display results, select a random time instant</span></span>
+<span id="cb19-7"><a href="#cb19-7"></a>times &lt;-<span class="st"> </span><span class="kw">names</span>(nt_stnb)</span>
+<span id="cb19-8"><a href="#cb19-8"></a>t &lt;-<span class="st"> </span><span class="kw">sample</span>(<span class="dv">1</span><span class="op">:</span><span class="kw">length</span>(times), <span class="dt">size =</span> <span class="dv">1</span>)</span>
+<span id="cb19-9"><a href="#cb19-9"></a>t</span>
+<span id="cb19-10"><a href="#cb19-10"></a><span class="kw">head</span>(nt_stnb[[t]]<span class="op">$</span>stats)</span>
+<span id="cb19-11"><a href="#cb19-11"></a><span class="kw">head</span>(nt_stnb[[t]]<span class="op">$</span>rnd_values)</span></code></pre></div>
+</div>
+</div>
+<div id="origin-destination-matrices" class="section level1">
+<h1>Origin-destination matrices</h1>
+<div id="methodological-aspects-2" class="section level2">
+<h2>Methodological aspects</h2>
+<p>The inference of the origin-destination matrices for the target population is more delicate than the present population because auxiliary information from population registers do not contain this kind of information.</p>
+<p>We use a simple approach extending the model from the previous section to produce the origin-destination matrices. If <span class="math inline">\(N_{tr}\)</span> and <span class="math inline">\(\tau_{t,rs}\)</span> denote the number of individuals of the target population at time <span class="math inline">\(t\)</span> in region <span class="math inline">\(r\)</span> and the aggregate transition probability from region <span class="math inline">\(s\)</span> to region <span class="math inline">\(r\)</span> at the time interval <span class="math inline">\((t-1,t)\)</span>, then we can simply define <span class="math inline">\(N_{t,rs} = N_{t-1s}\times\tau_{t,rs}\)</span> and trivially build the origin-destination matrix for each time interval <span class="math inline">\((t-1, t)\)</span>. Under the same general assumption as before, if individuals are to move across the geographical territory independently of their mobile network operator (or even not being a subscriber or carrying two devices), we can postulate as a first simple choice <span class="math inline">\(\tau_{t,rs}=\tau_{t,rs}^{\textrm{net}}\)</span>, as before.</p>
+</div>
+<div id="implementation-step-by-step-2" class="section level2">
+<h2>Implementation step by step</h2>
+<p>As final step, the origin-destination matrices for all pairs of time instants <em>time_from-time_to</em> are computed using all three results computed for the population at <span class="math inline">\(t_0\)</span> (using Beta Negative Binomial, Negative Binomial and the state process Negative Binomial). The actual computation is performed by <em>computePopulationOD</em> function which takes the same input parameters as <em>computePopulationT</em>. The result of this function is again a list with one element for each pair of <em>time_from-time_to</em>. Each element of the list is also a list with one or two elements, depending on the value of the <em>rndVal</em> parameter. If <em>rndVal</em> is <em>TRUE</em> there are two elements in the list corresponding to time instant a pair <em>time_from-time_to</em>. The first one is a data.table object with some descriptive statistics for the origin-destination matrix, containing the following columns: <em>{region_from, region_to, Mean, Mode, Median, Min, Max, Q1, Q3, IQR, SD, CV, CI_LOW, CI_HIGH}</em>. The second one is a data.table object with the random values for origin-destination matrix generated for each pair of time instants <em>time_from-time_to</em> and each pair of regions <em>region_from-region_to</em>, with the following columns: <em>{region_from, region_to, iter, NPop}</em>. If <em>rndVal</em> is <em>FALSE</em> the list for a pair of time instants <em>time_from-time_to</em> contains only the first element previously mentioned. The name of the list element corresponding to a pair of time instants is <em>time_from-time_to</em> and the name of the two list elements giving the descriptive statistics and random values are <em>stats</em> and <em>rnd_values</em>.</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a><span class="co"># Beta Negative Binomial distribution</span></span>
+<span id="cb20-2"><a href="#cb20-2"></a>OD_bnb &lt;-<span class="st"> </span><span class="kw">computePopulationOD</span>(<span class="dt">nt0 =</span> n_bnb<span class="op">$</span>rnd_values, </span>
+<span id="cb20-3"><a href="#cb20-3"></a>                              <span class="dt">nnetODFileName =</span> nnetODFile, </span>
+<span id="cb20-4"><a href="#cb20-4"></a>                              <span class="dt">rndVal =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb20-5"><a href="#cb20-5"></a></span>
+<span id="cb20-6"><a href="#cb20-6"></a><span class="co"># to display results, select a random time instant</span></span>
+<span id="cb20-7"><a href="#cb20-7"></a>time_pairs &lt;-<span class="st"> </span><span class="kw">names</span>(OD_bnb)</span>
+<span id="cb20-8"><a href="#cb20-8"></a>i &lt;-<span class="st"> </span><span class="kw">sample</span>(<span class="dv">1</span><span class="op">:</span><span class="kw">length</span>(time_pairs), <span class="dt">size =</span> <span class="dv">1</span>)</span>
+<span id="cb20-9"><a href="#cb20-9"></a>time_pairs[i]</span>
+<span id="cb20-10"><a href="#cb20-10"></a><span class="kw">head</span>(OD_bnb[[i]]<span class="op">$</span>stats)</span>
+<span id="cb20-11"><a href="#cb20-11"></a><span class="kw">head</span>(OD_bnb[[i]]<span class="op">$</span>rnd_values)</span></code></pre></div>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1"></a><span class="co"># Negative Binomial distribution</span></span>
+<span id="cb21-2"><a href="#cb21-2"></a>OD_nb &lt;-<span class="st"> </span><span class="kw">computePopulationOD</span>(<span class="dt">nt0 =</span> n_nb<span class="op">$</span>rnd_values, </span>
+<span id="cb21-3"><a href="#cb21-3"></a>                             <span class="dt">nnetODFileName =</span> nnetODFile, </span>
+<span id="cb21-4"><a href="#cb21-4"></a>                             <span class="dt">rndVal =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb21-5"><a href="#cb21-5"></a></span>
+<span id="cb21-6"><a href="#cb21-6"></a><span class="co"># to display results, select a random time instant</span></span>
+<span id="cb21-7"><a href="#cb21-7"></a>time_pairs &lt;-<span class="st"> </span><span class="kw">names</span>(OD_nb)</span>
+<span id="cb21-8"><a href="#cb21-8"></a>i &lt;-<span class="st"> </span><span class="kw">sample</span>(<span class="dv">1</span><span class="op">:</span><span class="kw">length</span>(time_pairs), <span class="dt">size =</span> <span class="dv">1</span>)</span>
+<span id="cb21-9"><a href="#cb21-9"></a>time_pairs[i]</span>
+<span id="cb21-10"><a href="#cb21-10"></a><span class="kw">head</span>(OD_nb[[i]]<span class="op">$</span>stats)</span>
+<span id="cb21-11"><a href="#cb21-11"></a><span class="kw">head</span>(OD_nb[[i]]<span class="op">$</span>rnd_values)</span></code></pre></div>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1"></a><span class="co"># State process Negative Binomial distribution</span></span>
+<span id="cb22-2"><a href="#cb22-2"></a>OD_stnb &lt;-<span class="st"> </span><span class="kw">computePopulationOD</span>(<span class="dt">nt0 =</span> n_stnb<span class="op">$</span>rnd_values, </span>
+<span id="cb22-3"><a href="#cb22-3"></a>                               <span class="dt">nnetODFileName =</span> nnetODFile, </span>
+<span id="cb22-4"><a href="#cb22-4"></a>                               <span class="dt">rndVal =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb22-5"><a href="#cb22-5"></a></span>
+<span id="cb22-6"><a href="#cb22-6"></a><span class="co"># to display results, select a random time instant</span></span>
+<span id="cb22-7"><a href="#cb22-7"></a>time_pairs &lt;-<span class="st"> </span><span class="kw">names</span>(OD_stnb)</span>
+<span id="cb22-8"><a href="#cb22-8"></a>i &lt;-<span class="st"> </span><span class="kw">sample</span>(<span class="dv">1</span><span class="op">:</span><span class="kw">length</span>(time_pairs), <span class="dt">size =</span> <span class="dv">1</span>)</span>
+<span id="cb22-9"><a href="#cb22-9"></a>time_pairs[i]</span>
+<span id="cb22-10"><a href="#cb22-10"></a><span class="kw">head</span>(OD_stnb[[i]]<span class="op">$</span>stats)</span>
+<span id="cb22-11"><a href="#cb22-11"></a><span class="kw">head</span>(OD_stnb[[i]]<span class="op">$</span>rnd_values)</span></code></pre></div>
+</div>
+</div>
+<div id="some-remarks-about-computational-efficiency" class="section level1">
+<h1>Some remarks about computational efficiency</h1>
+<p>Functions is this package make use of the processing features of the data.table package which implements them very efficiently. Since population at <span class="math inline">\(t\)</span> depends on population at <span class="math inline">\(t-1\)</span>, the computation of the target population distributions at different time instants is inherently sequential. Functions that takes a longer time to execute display a progress bar to show how the computations advance.</p>
+</div>
+<div id="references" class="section level1 unnumbered">
+<h1>References</h1>
+<div id="refs" class="references">
+<div id="ref-bmc_paper">
+<p>David Salgado, Luis Sanguiao, Bogdan Oancea, Sandra Barragan, Marian Necula. 2020. “An End-to-End Statistical Process with Mobile Network Data for Official Statistics.” In <em>Big Data Meets Survey Science (Bigsurv20), November 2020</em>.</p>
+</div>
+<div id="ref-WP5Deliverable1.3">
+<p>David Salgado, Luis Sanguiao, Sandra Barragan, Bogdan Oancea, Milena Suarez-Castillo. 2019. “A Proposed Production Framework with Mobile Network Data - Deliverable I.3 (Methodology).”</p>
+</div>
+<div id="ref-ecology">
+<p>Royle, A. J., and R. M. Dorazio. 2009. <em>Hierarchical Modelling and Inference in Ecology</em>. Elsevier.</p>
+</div>
+</div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

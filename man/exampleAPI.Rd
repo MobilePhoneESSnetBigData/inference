@@ -13,17 +13,18 @@ exampleAPI()
 
 ########################################
 # First, in a separate R console run the following instructions that start the http API on your local computer
-# One can replace 127.0.0.1 with the PI address of another Web server
+# One can replace 127.0.0.1 with the API address of another Web server
 library(plumber)
 pathPL <-'plumber'
 initPop_api <- plumber::plumb(system.file(path, 'plumb.R', package = 'inference'))
 initPop_api$run(host = '127.0.0.1', port = 8000)
 ########################################
-# set the folder where the necessary input files are stored and the prefix of the input file names.
+
 library(httr)
 library(jsonlite)
 library(data.table)
 
+# set the folder where the necessary input files are stored and the prefix of the input file names.
 path      <- system.file('extData', package = 'inference')
 prefix <- 'postLocDevice'
 
@@ -52,10 +53,11 @@ raw.result$status_code
 # transform back the results from json format
 omega_r <- as.data.table(fromJSON(rawToChar(raw.result$content)))
 
-# reads the number of individuals detected by network
+# Compute the parameters of the distribution
+# First reads the number of individuals detected by network
 nFileName <- system.file('extData', 'nnet.csv', package = 'inference')
 nnet <- readNnetInitial(nFileName)
-# compute the parameters of the distribution
+
 pRFileName <- system.file('extData', 'pop_reg.csv', package = 'inference')
 pRateFileName <- system.file('extData', 'pnt_rate.csv', package = 'inference')
 grFileName <- system.file('extData', 'grid.csv', package = 'inference')
@@ -64,9 +66,9 @@ grFileName <- system.file('extData', 'grid.csv', package = 'inference')
 body <- list(
    .omega = omega_r,
   .popRegFileName = pRFileName,
-  .pntRateFileName <-pRateFileName
+  .pntRateFileName  = pRateFileName,
   .regsFileName = rgFileName,
-  .gridFileName <- grFileName,
+  .gridFileName = grFileName,
   .rel_bias <- 0,
   .cv <- 1e-5
 )
