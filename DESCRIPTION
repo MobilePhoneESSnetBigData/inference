@@ -31,5 +31,6 @@ Collate:
     'computePopulationT.R'
     'computeRegionAreas.R'
     'example.R'
+    'exampleAPI.R'
     'inference.R'
     'readNnetInitial.R'
