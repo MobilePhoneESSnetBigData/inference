@@ -1,11 +1,11 @@
-#' Example of using the inference package
+#' Example of using the API inference
 #'
 #' # This is an example on how to use the REST API of this package to generate the distribution of the population count.
-#' 
+#'
 #' @examples
-#' 
+#'
 #' ########################################
-#' # First, in a separate R console run the following instructions that start the http API on your local computer 
+#' # First, in a separate R console run the following instructions that start the http API on your local computer
 #' # One can replace 127.0.0.1 with the PI address of another Web server
 #' library(plumber)
 #' pathPL <-'plumber'
@@ -171,3 +171,5 @@
 #' time_pairs[i]
 #' OD_bnb[[i]]$stats
 #' head(OD_bnb[[i]]$rnd_values)
+
+exampleAPI <- function() {}
