@@ -153,7 +153,7 @@ knitr::opts_chunk$set(
 ## ----eval=FALSE, message=FALSE------------------------------------------------
 #  library(plumber)
 #  pathPL <-'plumber'
-#  initPop_api <- plumber::plumb(system.file(path, 'plumb.R', package = 'inference'))
+#  initPop_api <- plumber::plumb(system.file(pathPL, 'plumb.R', package = 'inference'))
 #  initPop_api$run(host = '127.0.0.1', port = 8000)
 
 ## ----eval=FALSE, message=FALSE------------------------------------------------
@@ -162,7 +162,7 @@ knitr::opts_chunk$set(
 #  library(data.table)
 #  
 #  # set the folder where the necessary input files are stored and the prefix of the input file names.
-#  path      <- system.file('extData', package = 'inference')
+#  path      <- 'extData'
 #  prefix <- 'postLocDevice'
 #  dpFileName <- system.file(path, 'duplicity.csv', package = 'inference')
 #  rgFileName <- system.file(path, 'regions.csv', package = 'inference')
@@ -194,12 +194,12 @@ knitr::opts_chunk$set(
 ## ----eval = FALSE-------------------------------------------------------------
 #  # Compute the parameters of the distribution
 #  # First reads the number of individuals detected by network
-#  nFileName <- system.file('extData', 'nnet.csv', package = 'inference')
+#  nFileName <- system.file(path, 'nnet.csv', package = 'inference')
 #  nnet <- readNnetInitial(nFileName)
 #  
-#  pRFileName <- system.file('extData', 'pop_reg.csv', package = 'inference')
-#  pRateFileName <- system.file('extData', 'pnt_rate.csv', package = 'inference')
-#  grFileName <- system.file('extData', 'grid.csv', package = 'inference')
+#  pRFileName <- system.file(path, 'pop_reg.csv', package = 'inference')
+#  pRateFileName <- system.file(path, 'pnt_rate.csv', package = 'inference')
+#  grFileName <- system.file(path, 'grid.csv', package = 'inference')
 #  
 #  # prepare the body of the http request
 #  body <- list(
@@ -256,7 +256,7 @@ knitr::opts_chunk$set(
 ## ----eval = FALSE-------------------------------------------------------------
 #  # Compute the population count distribution at time instants t > t0 using the Beta Negative Binomial distribution
 #  # first set the name of the file with the population moving from one region to another (output of the aggregation # package)
-#  nnetODFile <- system.file('extData', 'nnetOD.zip', package = 'inference')
+#  nnetODFile <- system.file(path, 'nnetOD.zip', package = 'inference')
 #  
 #  # prepare the body of the http request
 #  body <- list(
