@@ -25,8 +25,9 @@ library(jsonlite)
 library(data.table)
 
 # set the folder where the necessary input files are stored and the prefix of the input file names.
-path      <- system.file('extData', package = 'inference')
+path      <- 'extData'
 prefix <- 'postLocDevice'
+postLocPath <- system.file(path, package = 'inference')
 
 # compute the deduplication factors
 dpFileName <- system.file(path, 'duplicity.csv', package = 'inference')
@@ -55,12 +56,12 @@ omega_r <- as.data.table(fromJSON(rawToChar(raw.result$content)))
 
 # Compute the parameters of the distribution
 # First reads the number of individuals detected by network
-nFileName <- system.file('extData', 'nnet.csv', package = 'inference')
+nFileName <- system.file(path, 'nnet.csv', package = 'inference')
 nnet <- readNnetInitial(nFileName)
 
-pRFileName <- system.file('extData', 'pop_reg.csv', package = 'inference')
-pRateFileName <- system.file('extData', 'pnt_rate.csv', package = 'inference')
-grFileName <- system.file('extData', 'grid.csv', package = 'inference')
+pRFileName <- system.file(path, 'pop_reg.csv', package = 'inference')
+pRateFileName <- system.file(path, 'pnt_rate.csv', package = 'inference')
+grFileName <- system.file(path, 'grid.csv', package = 'inference')
 
 # prepare the body of the http request
 body <- list(
@@ -110,12 +111,12 @@ raw.result$status_code
 n_bnb <- fromJSON(rawToChar(raw.result$content))
 
 # display results
-n_nb$stats
-head(n_nb$rnd_values)
+n_bnb$stats
+head(n_bnb$rnd_values)
 
 # Compute the population count distribution at time instants t > t0 using the Beta Negative Binomial distribution
 # first set the name of the file with the population moving from one region to another (output of the aggregation package)
-nnetODFile <- system.file('extData', 'nnetOD.zip', package = 'inference')
+nnetODFile <- system.file(path, 'nnetOD.zip', package = 'inference')
 
 # prepare the body of the http request
 body <- list(

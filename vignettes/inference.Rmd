@@ -432,6 +432,7 @@ any language (Java, Python, etc.) capable of sending API requests over Internet;
 
 * for large datasets, the functions from the *inference* package can take a long time to compute their results. In this case the *inference* package can  be installed on a powerful computer that make public its API to all the users; 
 
+Using a htpp REST API to access the processing functions in the *inference* package is in line with the proposed models of mobile phone data usage: the data sets stays in the MNO premises and the statisticians perform their data analyses call functions from the available API. Of course, the functions available through the API should be first agreed between the MNOs and statistical offices. In a real environment, more precaution should be taken, i.e. using encrypted connections or even VPNs.
 
 In the following image we have a representation of the interaction between a client and the *inference* API. 
 
@@ -448,7 +449,7 @@ As we will use the same computer as client and server we need to run two instanc
 ```{r eval=FALSE, message=FALSE}
 library(plumber)
 pathPL <-'plumber'
-initPop_api <- plumber::plumb(system.file(path, 'plumb.R', package = 'inference'))
+initPop_api <- plumber::plumb(system.file(pathPL, 'plumb.R', package = 'inference'))
 initPop_api$run(host = '127.0.0.1', port = 8000)
 ```
 The address 127.0.0.1 can be changed with the address of any other server. After runnig these lines of code, if we access the localhost at port 8000 we will see the following interface:
@@ -460,13 +461,15 @@ Here we can see the names of the endpoints of our API as well as the methods tha
 Now we have to switch to the other R instance which will act as a client. First we have to set the folder where the file with duplicity probabilities and the file defining the regions are stored and the prefix of the posterior
 location probabilities files for all devices.
 
+Please note that if you run this example using a true client-server configuration, where the client and the server reside on different machine, in the same or different networks, the IP addresses should be upate accordingly. The path of the files needed for computation shloud be also updated according to their actual location.
+
 ```{r eval=FALSE, message=FALSE}
 library(httr)
 library(jsonlite)
 library(data.table)
  
 # set the folder where the necessary input files are stored and the prefix of the input file names.
-path      <- system.file('extData', package = 'inference')
+path      <- 'extData'
 prefix <- 'postLocDevice'
 dpFileName <- system.file(path, 'duplicity.csv', package = 'inference')
 rgFileName <- system.file(path, 'regions.csv', package = 'inference')
@@ -490,7 +493,7 @@ pathDedup <- 'computeDeduplicationFactors'
 url <- "http://127.0.0.1:8000"
 raw.result <- POST(url = url, path = pathDedup, body = body, encode = 'json')
 ```
-Now We obtained the result. First we check that everything went OK (we have to obtain code 200) and then unpack it from JSON format back to an R object
+Now we obtained the result. First, we check that everything went OK (we have to obtain code 200) and then unpack it from JSON format back to an R object:
 
 ```{r eval = FALSE}
 # check status code
@@ -499,17 +502,17 @@ raw.result$status_code
 # transform back the results from json format
 omega_r <- as.data.table(fromJSON(rawToChar(raw.result$content)))
 ```
-Next we compute the parameters of the posterior distribution of the population count using a similar approach: prepare the input data and build the body of the http request, set the API path and then send the request. After the API send back the response we check the status code (it should be 200 if all went OK) and unpack the response from JSON to an R object.
+Next, we compute the parameters of the posterior distribution of the population count using a similar approach: prepare the input data and build the body of the http request, set the API path and then send the request. After the API send back the response we check the status code (it should be 200 if all went OK) and unpack the response from JSON to an R object.
 
 ```{r eval = FALSE}
 # Compute the parameters of the distribution
 # First reads the number of individuals detected by network
-nFileName <- system.file('extData', 'nnet.csv', package = 'inference')
+nFileName <- system.file(path, 'nnet.csv', package = 'inference')
 nnet <- readNnetInitial(nFileName)
 
-pRFileName <- system.file('extData', 'pop_reg.csv', package = 'inference')
-pRateFileName <- system.file('extData', 'pnt_rate.csv', package = 'inference')
-grFileName <- system.file('extData', 'grid.csv', package = 'inference')
+pRFileName <- system.file(path, 'pop_reg.csv', package = 'inference')
+pRateFileName <- system.file(path, 'pnt_rate.csv', package = 'inference')
+grFileName <- system.file(path, 'grid.csv', package = 'inference')
  
 # prepare the body of the http request
 body <- list(
@@ -570,7 +573,7 @@ Computing the population at time instants t > t0 is done as follows:
 ```{r eval = FALSE}
 # Compute the population count distribution at time instants t > t0 using the Beta Negative Binomial distribution
 # first set the name of the file with the population moving from one region to another (output of the aggregation # package)
-nnetODFile <- system.file('extData', 'nnetOD.zip', package = 'inference')
+nnetODFile <- system.file(path, 'nnetOD.zip', package = 'inference')
  
 # prepare the body of the http request
 body <- list(
@@ -642,5 +645,6 @@ head(OD_bnb[[i]]$rnd_values)
 # Some remarks about computational efficiency
 
 Functions is this package make use of the processing features of the data.table package which implements them very efficiently. Since population at $t$ depends on population at $t-1$, the computation of the target population distributions at different time instants is inherently sequential. Functions that takes a longer time to execute display a progress bar to show how the computations advance.
+In the API mode, the computational efficiency could be supported by a powerful server machine. More, parallelization of the computations is achieved on server if several clients call in the same time different functions from API.
 
 # References
