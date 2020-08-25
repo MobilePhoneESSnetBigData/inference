@@ -95,3 +95,12 @@ function(req) {
 
 }
 
+#' @post /getPath
+#' @get /getPath
+function(req) {
+    require(jsonlite)
+    # post body
+    path <- jsonlite::fromJSON(req$postBody)
+    system.path(path, package = 'inference')
+}
+
