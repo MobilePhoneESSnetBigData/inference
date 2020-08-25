@@ -63,8 +63,8 @@
 #'   .pntRateFileName  = pRateFileName,
 #'   .regsFileName = rgFileName,
 #'   .gridFileName = grFileName,
-#'   .rel_bias <- 0,
-#'   .cv <- 1e-5
+#'   .rel_bias = 0,
+#'   .cv = 1e-5
 #' )
 #'
 #' # set API path
