@@ -9,7 +9,7 @@
 #' # One can replace 127.0.0.1 with the API address of another Web server
 #' library(plumber)
 #' pathPL <-'plumber'
-#' initPop_api <- plumber::plumb(system.file(path, 'plumb.R', package = 'inference'))
+#' initPop_api <- plumber::plumb(system.file(pathPL, 'plumb.R', package = 'inference'))
 #' initPop_api$run(host = '127.0.0.1', port = 8000)
 #' ########################################
 #'
@@ -63,8 +63,8 @@
 #'   .pntRateFileName  = pRateFileName,
 #'   .regsFileName = rgFileName,
 #'   .gridFileName = grFileName,
-#'   .rel_bias <- 0,
-#'   .cv <- 1e-5
+#'   .rel_bias = 0,
+#'   .cv = 1e-5
 #' )
 #'
 #' # set API path

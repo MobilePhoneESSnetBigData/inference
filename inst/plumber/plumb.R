@@ -56,7 +56,6 @@ function(req) {
     inference::computePopulationOD(nt0 = .nt0, nnetODFileName = .nnetODFileName, zip = .zip, rndVal = .rndVal, ciprob = .ciprob, method = .method)
 }
 
-
 #' @post /computeDeduplicationFactors
 #' @get /computeDeduplicationFactors
 function(req) {
@@ -95,3 +94,21 @@ function(req) {
 
 }
 
+#' @post /getPath
+#' @get /getPath
+function(req) {
+    require(jsonlite)
+    # post body
+    path <- jsonlite::fromJSON(req$postBody)
+    system.file(path, package = 'inference')
+    
+}
+
+#' @post /getNnetInitial
+#' @get /getNnetInitial
+function(req) {
+    require(jsonlite)
+    # post body
+    body <- jsonlite::fromJSON(req$postBody)
+    readNnetInitial(body$.nnetFileName)
+}
