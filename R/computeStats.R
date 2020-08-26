@@ -40,11 +40,11 @@ computeStats <- function(npop, ciprob, method, by = 'region') {
     }
     
     if(length(by) == 1 && by == 'region') {
-        stats <-cbind(pmean$region, pmean$V1, pmode$V1, pmedian$V1, pmin$V1, pmax$V1, pq1$V1, pq3$V1, piqr$V1, p_sigma$V1, p_cv$V1, round(p_ci$CI_low,2), round(p_ci$CI_high,2) )
+        stats <-as.data.table(cbind(pmean$region, pmean$V1, pmode$V1, pmedian$V1, pmin$V1, pmax$V1, pq1$V1, pq3$V1, piqr$V1, p_sigma$V1, p_cv$V1, round(p_ci$CI_low,2), round(p_ci$CI_high,2) ))
         colnames(stats) <-c('region', 'Mean', 'Mode', 'Median', 'Min', 'Max', 'Q1', 'Q3', 'IQR','SD', 'CV', 'CI_LOW','CI_HIGH')
     }
     if(length(by)==2 && by == c('region_from', 'region_to')) {
-        stats <-cbind(pmean$region_from, pmean$region_to, pmean$V1, pmode$V1, pmedian$V1, pmin$V1, pmax$V1, pq1$V1, pq3$V1, piqr$V1, p_sigma$V1, p_cv$V1, round(p_ci$CI_low,2), round(p_ci$CI_high,2) )
+        stats <-as.data.table(cbind(pmean$region_from, pmean$region_to, pmean$V1, pmode$V1, pmedian$V1, pmin$V1, pmax$V1, pq1$V1, pq3$V1, piqr$V1, p_sigma$V1, p_cv$V1, round(p_ci$CI_low,2), round(p_ci$CI_high,2)))
         colnames(stats) <-c('region_from', 'region_to', 'Mean', 'Mode', 'Median', 'Min', 'Max', 'Q1', 'Q3', 'IQR','SD', 'CV', 'CI_LOW','CI_HIGH')
         
     }

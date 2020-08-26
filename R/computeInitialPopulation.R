@@ -75,7 +75,6 @@ computeInitialPopulation <- function(nnet, params, popDistr, rndVal = FALSE, cip
         result[[2]]<-NIP
         names(result) <-c('stats', 'rnd_values')
     }
-    
     return(result)
     
 }
