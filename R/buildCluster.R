@@ -14,14 +14,13 @@
 #' @param env An environment to be exported to every working node.
 #'
 #' @return A cluster object used to distribute the computations.
-#'
+#' @keywords internal
 #' @import data.table
 #' @import deduplication
 #' @import parallel
 #' @import doParallel
-#'   
 buildCluster <- function(varlist, env) {
-    
+
     if (Sys.info()[['sysname']] == 'Linux' |
         Sys.info()[['sysname']] == 'Darwin') {
         cl <- makeCluster(detectCores(), type = "FORK")

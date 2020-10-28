@@ -23,3 +23,4 @@ A data.table object
 \description{
 Computes the area of each region
 }
+\keyword{internal}

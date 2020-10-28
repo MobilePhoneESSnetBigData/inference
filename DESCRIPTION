@@ -4,7 +4,7 @@ Title: R package for computing the number of individuals in the target populatio
 Version: 0.1.0
 Author: Bogdan Oancea <bogdan.oancea@gmail.com>, David Salgado <david.salgado.fernandez@ine.es> Sandra Barragan <sandra.barragan.andres@ine.es>
 Maintainer: Bogdan Oancea <bogdan.oancea@gmail.com>
-Description: R package for for computing the number of individuals in the target population conditioned on the number of individuals detected by the mobile network and some auxiliary information
+Description: R package for computing the number of individuals in the target population conditioned on the number of individuals detected by the mobile network and some auxiliary information
 License: GPL3, EUPL
 Imports: data.table,
          deduplication,

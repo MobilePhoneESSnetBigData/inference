@@ -1,6 +1,9 @@
 #' @title Computes the origin-destination matrices.
 #'
-#' @description Computes the origin-destination matrices for all pairs of time instants time_from-time_to.
+#' @description Computes the origin-destination matrices for all pairs of time instants time_from-time_to. For details
+#'   of the theoretical background of the origin-destination matrices computation an interested reader can consult the description
+#'   of the methodological framework \url{https://webgate.ec.europa.eu/fpfis/mwikis/essnetbigdata/images/f/fb/WPI_Deliverable_I3_A_proposed_production_framework_with_mobile_network_data_2020_05_31_draft.pdf}.
+#'
 #'
 #' @param nt0 The population at t0.
 #'
@@ -31,40 +34,41 @@
 #'   'time_from-time_to' and the name of the two list elements giving the descriptive statistics and random values are
 #'   'stats' and 'rnd_values'.
 #'
+#' @references \url{https://github.com/MobilePhoneESSnetBigData}
 #' @import data.table
 #' @import utils
 #' @include computeStats.R
 #' @include computeTau.R
 #' @export
 computePopulationOD <- function(nt0, nnetODFileName, zip = TRUE, rndVal = FALSE, ciprob = NULL, method = 'ETI') {
-    
+
     tau = computeTau(nnetODFileName, zip)
     regs<-unique(nt0$region)
     n<-length(regs)
-    
+
     nt0[,iter:=rep(1:(nrow(nt0)/n),times = n)]
     runningN <- copy(nt0)[, N := NULL]
     setcolorder(runningN, c('region', 'iter'))
-    
+
     times_from <- sort(unique(tau$time_from))
     times_to <- sort(unique(tau$time_to))
-    
+
     result <- vector(mode = 'list', length = length(times_from))
-    
+
     names(result)<-paste0(times_from, "-",times_to)
     k=1
     pb <- txtProgressBar(min = 0, max = length(times_from), style = 3)
     for(timeFrom in times_from) {
         tempDT <- merge(tau[time_from == timeFrom], runningN,
-                        by.x = c('region_from', 'iter'), by.y = c('region', 'iter'), 
+                        by.x = c('region_from', 'iter'), by.y = c('region', 'iter'),
                         allow.cartesian = TRUE)
-        
+
         tempOD <- tempDT[, OD := tau_Nnet * NPop]
 
         runningN <- tempDT[, list(NPop = round(sum(tau_Nnet * NPop))), by = c('region_to', 'iter')]
         setnames(runningN, c('region_to'), c('region'))
         rm(tempDT)
-        
+
         gc()
         tempOD<-tempOD[, NPop:=NULL]
         tempOD<-tempOD[, time_from:=NULL]
@@ -84,5 +88,5 @@ computePopulationOD <- function(nt0, nnetODFileName, zip = TRUE, rndVal = FALSE,
     }
     close(pb)
     return (result)
-    
+
 }

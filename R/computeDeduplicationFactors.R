@@ -1,4 +1,8 @@
-#' @title  Computes the deduplication factors for each region
+#' @title  Computes the deduplication factors for each region.
+#'
+#' @description Computes the deduplication factors for each region of the map. For a complete description of these factors
+#' an interested reader can consult the description
+#' of the methodological framework \url{https://webgate.ec.europa.eu/fpfis/mwikis/essnetbigdata/images/f/fb/WPI_Deliverable_I3_A_proposed_production_framework_with_mobile_network_data_2020_05_31_draft.pdf}.
 #'
 #' @param dupFileName The name of the file with the duplicity probabilities. This file is the output of the
 #'   \code{deduplication} package.
@@ -10,64 +14,64 @@
 #' @param postLocPath The path to the location where the posterior location probabilities are stored.
 #'
 #' @param postLocPrefix The file name prefix of the files with posterior location probabilities for each device. The
-#'   whole file name is composed by a concatenation of \code{prefixName}, \code{_} and \code{deviceID}.The extension of
+#'   whole file name is composed by a concatenation of \code{prefixName}, \code{_} and \code{deviceID}. The extension of
 #'   these files is \code{.dt.csv}
 #'
 #'
 #' @return A data.table object with the deduplication factors for each region.
 #'
-#'
+#' @references \url{https://github.com/MobilePhoneESSnetBigData}
 #' @import data.table
 #' @import parallel
 #' @import deduplication
 #' @export
 computeDeduplicationFactors <- function(dupFileName, regsFileName, postLocPrefix, postLocPath) {
-    
+
     if (!file.exists(dupFileName))
         stop(paste0(dupFileName, " does not exists!"))
-    
+
     duplicity <- fread(
         dupFileName,
         sep = ',',
         header = TRUE,
         stringsAsFactors = FALSE
     )
-    
+
     if (!file.exists(regsFileName))
         stop(paste0(regsFileName, " does not exists!"))
-    
+
     regions <- fread(
         regsFileName,
         sep = ',',
         header = TRUE,
         stringsAsFactors = FALSE
     )
-    
+
     devices<-sort(duplicity$device)
     ndevices<-length(devices)
-    
+
     postLocPath <- postLocPath
     postLocPrefix <- postLocPrefix
-    
+
     cl <- buildCluster( c('postLocPath', 'postLocPrefix', 'devices') , env=environment() )
     ich<-clusterSplit(cl, 1:ndevices)
     res<-clusterApplyLB(cl, ich, doRead, postLocPath, postLocPrefix, devices)
     postLocProb0 <- rbindlist((res))
     stopCluster(cl)
     setnames(postLocProb0,'V2', 'device')
-    setnames(duplicity, 'deviceID', 'device')    
-    
-    
+    setnames(duplicity, 'deviceID', 'device')
+
+
     postLocProb0 <- merge(postLocProb0, regions, by = 'tile', all.x = TRUE)[
             , list(prob = sum(probL)), by = c('device', 'region')]
-    
-    
+
+
     omega_region <- merge(postLocProb0, duplicity, by='device')[
-        , list(omega1 = sum(prob * (1 - dupP)) / sum(prob), 
+        , list(omega1 = sum(prob * (1 - dupP)) / sum(prob),
                omega2 = sum(prob * dupP) / sum(prob)), by = 'region']
-    
+
     return (omega_region)
-    
+
 }
 
 doRead <- function(ichunks, postLocPath, postLocPrefix, devices) {

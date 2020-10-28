@@ -1,6 +1,9 @@
 #' @title Computes population counts at time  instants t >t0.
 #'
-#' @description Computes the distribution of the population counts for all times instants t > t0.
+#' @description Computes the distribution of the population counts for all times instants t > t0. For details
+#'   of the theoretical background behind this distribution an interested reader can consult the description
+#'   of the methodological framework \url{https://webgate.ec.europa.eu/fpfis/mwikis/essnetbigdata/images/f/fb/WPI_Deliverable_I3_A_proposed_production_framework_with_mobile_network_data_2020_05_31_draft.pdf}.
+#'
 #'
 #' @param nt0 The population at t0.
 #'
@@ -29,29 +32,30 @@
 #'   to time instant t is 't' and the name of the two list elements giving the descriptive statistics and random values
 #'   for time t are 'stats' and 'rnd_values'.
 #'
+#' @references \url{https://github.com/MobilePhoneESSnetBigData}
 #' @import data.table
 #' @import utils
 #' @include computeStats.R
 #' @include computeTau.R
 #' @export
 computePopulationT <- function(nt0, nnetODFileName, zip = TRUE, rndVal = FALSE, ciprob = NULL, method = 'ETI') {
-    
+
     tau = computeTau(nnetODFileName, zip)
     regs<-unique(nt0$region)
     n<-length(regs)
-    
+
     nt0[,iter:=rep(1:(nrow(nt0)/n),times = n)]
-    
+
     runningN <- copy(nt0)[, N := NULL]
     setcolorder(runningN, c('region', 'iter'))
-    
+
     times <- sort(unique(tau$time_from))
     timeIncrement <- unique(diff(times))
-    
-   
+
+
     result <- vector(mode = 'list', length = length(times)+1)
     names(result)<-as.character(c(times, times[length(times)]+timeIncrement))
-    
+
     result[[1]][[1]] <- computeStats(runningN, ciprob, method)
     names(result[[1]]) <-c('stats')
     if(rndVal==TRUE) {
@@ -69,9 +73,9 @@ computePopulationT <- function(nt0, nnetODFileName, zip = TRUE, rndVal = FALSE, 
         runningN <- tempDT[, list(NPop = round(sum(tau_Nnet * NPop))), by = c('region_to', 'iter')]
         setnames(runningN, c('region_to'), c('region'))
         rm(tempDT)
-        
+
         gc()
-        
+
         stats_line <- computeStats(runningN, ciprob, method)
         k <- k + 1
         result[[k]][[1]] <- stats_line
@@ -89,18 +93,18 @@ computePopulationT <- function(nt0, nnetODFileName, zip = TRUE, rndVal = FALSE, 
 doPopT <- function(ichunks, times, timeIncrement, tau, rndVal, ciprob, method ) {
     res<-vector(mode = 'list', length = length(ichunks))
     names(res) <- as.character(ichunks + timeIncrement)
-    k <- 1            
+    k <- 1
     for(timeFrom in ichunks) {
-        cat(paste0('Time ', timeFrom, '... '))  
+        cat(paste0('Time ', timeFrom, '... '))
         tempDT <- merge(tau[time_from == timeFrom], runningN,
-                        by.x = c('region_from', 'iter'), by.y = c('region', 'iter'), 
+                        by.x = c('region_from', 'iter'), by.y = c('region', 'iter'),
                         allow.cartesian = TRUE)
         runningN <- tempDT[, list(NPop = sum(tau_Nnet * NPop)), by = c('region_to', 'iter')]
         setnames(runningN, c('region_to'), c('region'))
         rm(tempDT)
         gc()
         cat(paste0(' ok.\n'))
-        
+
         stats_line <- computeStats(runningN, ciprob, method)
         res[[k]][[1]] <- stats_line
         names(res[[k]]) <- 'stats'
@@ -110,7 +114,7 @@ doPopT <- function(ichunks, times, timeIncrement, tau, rndVal, ciprob, method ) 
             names(res[[k]]) <-c('stats', 'rnd_values')
         }
         k <- k + 1
-        
+
     }
     return(res)
 }

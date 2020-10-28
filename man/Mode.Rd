@@ -9,3 +9,4 @@ Mode(v)
 \description{
 Contains a function to compute the Mode of a data set
 }
+\keyword{internal}
