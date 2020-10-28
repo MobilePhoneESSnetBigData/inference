@@ -11,14 +11,14 @@
 #'   network.
 #'
 #' @param params The parameters of the distribution. It should be a data.table object with the following columns:
-#'   \code{region, omega1, omega2, pnrRate, regionArea_km2, N0, dedupPntRate, alpha, beta, theta, zeta, Q}.
+#'   \code{region, omega1, omega2, pnrRate, regionArea_km2, N0, \cr dedupPntRate, alpha, beta, theta, zeta, Q}.
 #'
 #' @param popDistr The distribution to be used for population count. This parameter could have one of the following
 #'   values: \code{NegBin} (negative binomial distribution), \code{BetaNegBin} (beta negative binomial distribution) or
 #'   \code{STNegBin}  (state process negative binomial distribution).
 #'
 #' @param rndVal If FALSE the result return by this function will be a list with a single element, a data.table object
-#'   with the following columns: \code{region, Mean, Mode, Median, SD, Min, Max, Q1, Q3, IQR, CV, CI_LOW, CI_HIGH}. If
+#'   with the following columns: \code{region, Mean, Mode, Median, SD, \cr Min, Max, Q1, Q3, IQR, CV, CI_LOW, CI_HIGH}. If
 #'   TRUE the list will have a second element which is a data.table object containing the random values generated for
 #'   each region.
 #'
@@ -29,7 +29,7 @@
 #'
 #' @return A list object with one or two elements. If rndVal is FALSE the list will have a single element with
 #'   descriptive statistics for the population count, which is a data.table object with the following columns:
-#'   \code{region, Mean, Mode, Median, Min, Max, Q1, Q3, IQR, SD, CV, CI_LOW, CI_HIGH}. If rndVal is TRUE the list will
+#'   \code{region, Mean, Mode, Median, Min, Max, Q1, Q3, IQR, SD, CV, \cr CI_LOW, CI_HIGH}. If rndVal is TRUE the list will
 #'   have a second element which is a data.table object containing the random values generated for each region. The name
 #'   of the two list elements giving the descriptive statistics and random values for time t are 'stats' and
 #'   'rnd_values'.
@@ -39,45 +39,60 @@
 #' @import bayestestR
 #' @include utils.R
 #' @export
-computeInitialPopulation <- function(nnet, params, popDistr, rndVal = FALSE, ciprob = NULL, method = 'ETI') {
+computeInitialPopulation <-
+    function(nnet,
+             params,
+             popDistr,
+             rndVal = FALSE,
+             ciprob = NULL,
+             method = 'ETI') {
+        if (!(popDistr %in% c('NegBin', 'BetaNegBin', 'STNegBin')))
+            stop('popDistr should have one of the following values: NegBin, BetaNegBin, STNegBin!')
 
-    if(!( popDistr %in% c('NegBin', 'BetaNegBin', 'STNegBin')))
-        stop('popDistr should have one of the following values: NegBin, BetaNegBin, STNegBin!')
+        Ninit <-
+            merge(
+                nnet,
+                params,
+                by = 'region',
+                all.x = TRUE,
+                allow.cartesian = TRUE
+            )
 
-    Ninit<-merge(nnet, params, by='region', all.x = TRUE, allow.cartesian = TRUE)
+        if (popDistr == 'STNegBin') {
+            NIP <- copy(Ninit)[, row := .I][, list(
+                region = region,
+                N = N,
+                NPop = N + rnbinom(1, N + zeta + 1, 1 - beta * Q / (alpha + beta))
+            ), by = 'row']
+        }
 
-    if(popDistr == 'STNegBin') {
-        NIP <- copy(Ninit)[, row := .I][
-            , list(region = region,
-                   N = N,
-                   NPop = N + rnbinom(1, N + zeta + 1, 1 - beta * Q / (alpha + beta))), by = 'row']
+        if (popDistr == 'NegBin') {
+            NIP <- copy(Ninit)[, row := .I][, list(
+                region = region,
+                N = N,
+                NPop = N + rnbinom(1, N + 1, (alpha - 1) / (alpha + beta - 1))
+            ), by = 'row']
+
+        }
+        if (popDistr == 'BetaNegBin') {
+            NIP <- copy(Ninit)[, row := .I][, list(
+                region = region,
+                N = N,
+                NPop = N + rbnbinom(1, N + 1, alpha - 1, beta)
+            ), by = 'row']
+
+        }
+        NIP[, row := NULL]
+
+        stats <- computeStats(NIP, ciprob, method)
+        result <- list()
+        result[[1]] <- stats
+        names(result) <- 'stats'
+        if (rndVal) {
+            result[[2]] <- NIP
+            names(result) <- c('stats', 'rnd_values')
+        }
+
+        return(result)
+
     }
-
-    if(popDistr == 'NegBin') {
-        NIP <- copy(Ninit)[, row := .I][
-            , list(region = region,
-                   N = N,
-                   NPop = N + rnbinom(1, N + 1, (alpha - 1) / (alpha + beta - 1))), by = 'row']
-
-    }
-    if(popDistr == 'BetaNegBin') {
-        NIP <- copy(Ninit)[, row := .I][
-            , list(region = region,
-                   N = N,
-                   NPop = N + rbnbinom(1, N + 1, alpha - 1, beta)), by = 'row']
-
-    }
-    NIP[,row:=NULL]
-
-    stats<-computeStats(NIP, ciprob, method)
-    result<-list()
-    result[[1]]<-stats
-    names(result) <-'stats'
-    if(rndVal) {
-        result[[2]]<-NIP
-        names(result) <-c('stats', 'rnd_values')
-    }
-
-    return(result)
-
-}

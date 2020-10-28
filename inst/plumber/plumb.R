@@ -1,6 +1,6 @@
 #' @title Runs the REST API of this package
 #'
-#' @description This script starts the REST API of the \code{inference} package and it should be run on a public server, accesible by clients.
+#' @description This script starts the REST API of the \code{inference} package and it should be run on a public server, accessible by clients.
 #' @references \url{https://github.com/MobilePhoneESSnetBigData}
 #'
 #'

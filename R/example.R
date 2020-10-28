@@ -17,7 +17,8 @@
 #' dpFileName <- system.file(path, 'duplicity.csv', package = 'inference')
 #' rgFileName <- system.file(path, 'regions.csv', package = 'inference')
 #'
-#' omega_r <- computeDeduplicationFactors(dpFileName, rgFileName, prefix, system.file(path, package = 'inference'))
+#' omega_r <- computeDeduplicationFactors(dpFileName, rgFileName, prefix,
+#' system.file(path, package = 'inference'))
 #'
 #' # reads the number of individuals detected by network
 #' nFileName <- system.file(path, 'nnet.csv', package = 'inference')
@@ -55,7 +56,8 @@
 #'
 #'
 #' # B. compute the population count distribution at time instants t > t0
-#' # first set the name of the file with the population moving from one region to another (output of the aggregation package)
+#' # first set the name of the file with the population moving from one region
+#' # to another (output of the aggregation package)
 #' nnetODFile <- system.file(path, 'nnetOD.zip', package = 'inference')
 #'
 #' # 1.Using the Beta Negative Binomial distribution
@@ -95,7 +97,8 @@
 #' head(nt_stnb[[t]]$rnd_values)
 #'
 #' # C. compute the origin-destination matrices for all pairs of time instants time_from-time_to
-#' # first set the name of the file with the population moving from one region to another (output of the aggregation package)
+#' # first set the name of the file with the population moving from one region
+#' # to another (output of the aggregation package)
 #' nnetODFile <- system.file(path, 'nnetOD.zip', package = 'inference')
 #'
 #' # 1.Using the Beta Negative Binomial distribution
