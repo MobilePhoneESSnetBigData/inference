@@ -19,3 +19,4 @@ distribution for each region.}
 Computes the following values: mean, mode, meadian, min, max, Q1, Q3, IQR , standard deviation,
   coefficient of variation, the value of the credible intreval (LOW, HI).
 }
+\keyword{internal}

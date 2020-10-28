@@ -7,7 +7,11 @@
 example()
 }
 \description{
-# This is just an example on how to use this package to generate the distribution of the population count.
+This is just an example on how to use this package to generate the distribution of the population count.
+}
+\details{
+This is a script that shows how to use the functions of this package to compute the distribution of the initial
+target population count, the distribution of the population count at successive time instants and the origin-destination matrix.
 }
 \examples{
 
@@ -134,4 +138,7 @@ OD_stnb[[i]]$stats
 head(OD_stnb[[i]]$rnd_values)
 
 
+}
+\references{
+\url{https://github.com/MobilePhoneESSnetBigData}
 }

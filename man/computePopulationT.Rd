@@ -43,5 +43,10 @@ A list with one element for each time instant (including t0). Each element of th
   for time t are 'stats' and 'rnd_values'.
 }
 \description{
-Computes the distribution of the population counts for all times instants t > t0.
+Computes the distribution of the population counts for all times instants t > t0. For details
+  of the theoretical background behind this distribution an interested reader can consult the description
+  of the methodological framework \url{https://webgate.ec.europa.eu/fpfis/mwikis/essnetbigdata/images/f/fb/WPI_Deliverable_I3_A_proposed_production_framework_with_mobile_network_data_2020_05_31_draft.pdf}.
+}
+\references{
+\url{https://github.com/MobilePhoneESSnetBigData}
 }

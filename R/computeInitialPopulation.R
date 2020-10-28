@@ -2,7 +2,9 @@
 #'
 #'
 #' @description Computes the distribution of the population count at initial time instant using one of the three
-#'   distributions: Negative Binomial, Beta Negative Binomial or State Process Negative Binomial.
+#'   distributions: Negative Binomial, Beta Negative Binomial or State Process Negative Binomial. For details
+#'   of the theoretical background behind this distribution an interested reader can consult the description
+#'   of the methodological framework \url{https://webgate.ec.europa.eu/fpfis/mwikis/essnetbigdata/images/f/fb/WPI_Deliverable_I3_A_proposed_production_framework_with_mobile_network_data_2020_05_31_draft.pdf}.
 #'
 #'
 #' @param nnet The random values generated with \code{aggregation} package for the number of individuals detected by the
@@ -31,42 +33,42 @@
 #'   have a second element which is a data.table object containing the random values generated for each region. The name
 #'   of the two list elements giving the descriptive statistics and random values for time t are 'stats' and
 #'   'rnd_values'.
-#'
+#' @references \url{https://github.com/MobilePhoneESSnetBigData}
 #' @import data.table
 #' @import extraDistr
 #' @import bayestestR
 #' @include utils.R
 #' @export
 computeInitialPopulation <- function(nnet, params, popDistr, rndVal = FALSE, ciprob = NULL, method = 'ETI') {
-    
+
     if(!( popDistr %in% c('NegBin', 'BetaNegBin', 'STNegBin')))
         stop('popDistr should have one of the following values: NegBin, BetaNegBin, STNegBin!')
-        
+
     Ninit<-merge(nnet, params, by='region', all.x = TRUE, allow.cartesian = TRUE)
-    
+
     if(popDistr == 'STNegBin') {
         NIP <- copy(Ninit)[, row := .I][
             , list(region = region,
                    N = N,
                    NPop = N + rnbinom(1, N + zeta + 1, 1 - beta * Q / (alpha + beta))), by = 'row']
     }
-    
+
     if(popDistr == 'NegBin') {
         NIP <- copy(Ninit)[, row := .I][
             , list(region = region,
                    N = N,
                    NPop = N + rnbinom(1, N + 1, (alpha - 1) / (alpha + beta - 1))), by = 'row']
-        
+
     }
     if(popDistr == 'BetaNegBin') {
         NIP <- copy(Ninit)[, row := .I][
             , list(region = region,
                    N = N,
                    NPop = N + rbnbinom(1, N + 1, alpha - 1, beta)), by = 'row']
-        
+
     }
-    NIP[,row:=NULL]    
-    
+    NIP[,row:=NULL]
+
     stats<-computeStats(NIP, ciprob, method)
     result<-list()
     result[[1]]<-stats
@@ -75,7 +77,7 @@ computeInitialPopulation <- function(nnet, params, popDistr, rndVal = FALSE, cip
         result[[2]]<-NIP
         names(result) <-c('stats', 'rnd_values')
     }
-    
+
     return(result)
-    
+
 }

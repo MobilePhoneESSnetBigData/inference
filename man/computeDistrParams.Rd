@@ -37,10 +37,15 @@ negative binomial distribution.}
 }
 \value{
 A data.table object with the following columns  \code{region, omega1, omega2, pnrRate, regionArea_km2, N0,
-  dedupPntRate, alpha, beta}. If regsFileName and gridFileName are not NULL the result will have 3 more
+  dedupPntRate, alpha, beta}. If \code{regsFileName} and \code{gridFileName} are not NULL the result will have 3 more
   columns:\code{region, omega1, omega2, pnrRate, regionArea_km2, N0, dedupPntRate, alpha, beta, theta, zeta, Q}. They
   are needed only for the state process negative binomial distribution.
 }
 \description{
-Computes the parameters of the population counts distributions.
+Computes a series of parameters needed to build the target population counts distribution.
+For a complete description of these parameters an interested reader can consult the description
+of the methodological framework \url{https://webgate.ec.europa.eu/fpfis/mwikis/essnetbigdata/images/f/fb/WPI_Deliverable_I3_A_proposed_production_framework_with_mobile_network_data_2020_05_31_draft.pdf}.
+}
+\references{
+\url{https://github.com/MobilePhoneESSnetBigData}
 }

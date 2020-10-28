@@ -2,7 +2,7 @@
 % Please edit documentation in R/computeDeduplicationFactors.R
 \name{computeDeduplicationFactors}
 \alias{computeDeduplicationFactors}
-\title{Computes the deduplication factors for each region}
+\title{Computes the deduplication factors for each region.}
 \usage{
 computeDeduplicationFactors(
   dupFileName,
@@ -20,7 +20,7 @@ first column contains the IDs of each tile in the grid while the second contains
 is defined by the user and it can be created with any text editor.}
 
 \item{postLocPrefix}{The file name prefix of the files with posterior location probabilities for each device. The
-whole file name is composed by a concatenation of \code{prefixName}, \code{_} and \code{deviceID}.The extension of
+whole file name is composed by a concatenation of \code{prefixName}, \code{_} and \code{deviceID}. The extension of
 these files is \code{.dt.csv}}
 
 \item{postLocPath}{The path to the location where the posterior location probabilities are stored.}
@@ -29,5 +29,10 @@ these files is \code{.dt.csv}}
 A data.table object with the deduplication factors for each region.
 }
 \description{
-Computes the deduplication factors for each region
+Computes the deduplication factors for each region of the map. For a complete description of these factors
+an interested reader can consult the description
+of the methodological framework \url{https://webgate.ec.europa.eu/fpfis/mwikis/essnetbigdata/images/f/fb/WPI_Deliverable_I3_A_proposed_production_framework_with_mobile_network_data_2020_05_31_draft.pdf}.
+}
+\references{
+\url{https://github.com/MobilePhoneESSnetBigData}
 }

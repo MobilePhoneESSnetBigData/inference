@@ -1,6 +1,12 @@
 #' Example of using the API inference
 #'
-#' # This is an example on how to use the REST API of this package to generate the distribution of the population count.
+#'@description This is just an example on how to use the REST API of this package to generate the distribution of the population count.
+#'
+#' @details This is a script that shows how to use the REST API of this package to compute the distribution of the initial target
+#' population count,
+#' the disitribution of the population count at successive time instants and the origin-destination matrix.
+#'
+#' @references \url{https://github.com/MobilePhoneESSnetBigData}
 #'
 #' @examples
 #'

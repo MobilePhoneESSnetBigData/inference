@@ -45,5 +45,10 @@ A list with one element for each pair of time_from-time_to. Each element of the 
   'stats' and 'rnd_values'.
 }
 \description{
-Computes the origin-destination matrices for all pairs of time instants time_from-time_to.
+Computes the origin-destination matrices for all pairs of time instants time_from-time_to. For details
+  of the theoretical background of the origin-destination matrices computation an interested reader can consult the description
+  of the methodological framework \url{https://webgate.ec.europa.eu/fpfis/mwikis/essnetbigdata/images/f/fb/WPI_Deliverable_I3_A_proposed_production_framework_with_mobile_network_data_2020_05_31_draft.pdf}.
+}
+\references{
+\url{https://github.com/MobilePhoneESSnetBigData}
 }

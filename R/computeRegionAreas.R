@@ -12,28 +12,28 @@
 #'
 #'@return A data.table object
 #'
-#'
+#'@keywords internal
 #'@import data.table
 #'@export
 computeRegionAreas<-function(regsFileName, gridFileName) {
     if (!file.exists(gridFileName))
         stop(paste0(gridFileName, " does not exists!"))
-    
-    gridParams <- readGridParams(gridFileName)    
-    
+
+    gridParams <- readGridParams(gridFileName)
+
     if (!file.exists(regsFileName))
         stop(paste0(regsFileName, " does not exists!"))
-    
+
     regions <- fread(
         regsFileName,
         sep = ',',
         header = TRUE,
         stringsAsFactors = FALSE
     )
-    
+
     regionAreas.dt <- regions[
             , tileArea_km2 := gridParams$tileX*gridParams$tileY *1e-6][
                 , list(regionArea_km2 = sum(tileArea_km2)), by = 'region']
-    
+
     return (regionAreas.dt)
 }

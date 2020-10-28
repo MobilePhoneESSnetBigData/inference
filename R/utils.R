@@ -1,7 +1,7 @@
 #' @title Utility function used throughout the package.
 #'
-#' @description Contains a function to compute the Mode of a data set 
-#'
+#' @description Contains a function to compute the Mode of a data set
+#' @keywords internal
 #' @export
 Mode = function(v){
   uniqv <- unique(v)

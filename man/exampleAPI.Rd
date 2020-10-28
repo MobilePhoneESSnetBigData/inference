@@ -7,7 +7,12 @@
 exampleAPI()
 }
 \description{
-# This is an example on how to use the REST API of this package to generate the distribution of the population count.
+This is just an example on how to use the REST API of this package to generate the distribution of the population count.
+}
+\details{
+This is a script that shows how to use the REST API of this package to compute the distribution of the initial target
+population count,
+the disitribution of the population count at successive time instants and the origin-destination matrix.
 }
 \examples{
 
@@ -180,4 +185,7 @@ i <- sample(1:length(time_pairs), size = 1)
 time_pairs[i]
 OD_bnb[[i]]$stats
 head(OD_bnb[[i]]$rnd_values)
+}
+\references{
+\url{https://github.com/MobilePhoneESSnetBigData}
 }

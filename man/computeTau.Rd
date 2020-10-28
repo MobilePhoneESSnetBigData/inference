@@ -16,3 +16,4 @@ file, otherwise it is  simple csv file.}
 \description{
 Computes tau, a coefficient needed for the calculation of the population counts at time t>t0.
 }
+\keyword{internal}

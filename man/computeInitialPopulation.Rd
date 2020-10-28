@@ -44,5 +44,10 @@ A list object with one or two elements. If rndVal is FALSE the list will have a 
 }
 \description{
 Computes the distribution of the population count at initial time instant using one of the three
-  distributions: Negative Binomial, Beta Negative Binomial or State Process Negative Binomial.
+  distributions: Negative Binomial, Beta Negative Binomial or State Process Negative Binomial. For details
+  of the theoretical background behind this distribution an interested reader can consult the description
+  of the methodological framework \url{https://webgate.ec.europa.eu/fpfis/mwikis/essnetbigdata/images/f/fb/WPI_Deliverable_I3_A_proposed_production_framework_with_mobile_network_data_2020_05_31_draft.pdf}.
+}
+\references{
+\url{https://github.com/MobilePhoneESSnetBigData}
 }
