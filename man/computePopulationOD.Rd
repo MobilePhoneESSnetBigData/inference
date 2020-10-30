@@ -36,7 +36,7 @@ A list with one element for each pair of time_from-time_to. Each element of the 
   or two elements, depending on the value of the rndVal parameter. If rndVal is TRUE there are two elements in the
   list corresponding to time instant a pair time_from-time_to. The first one is a data.table object with some
   descriptive statistics for the origin-destination matrix, containing the following columns:\code{region_from,
-  region_to, Mean, Mode, Median, Min, Max, Q1, Q3, IQR, SD, CV, CI_LOW, CI_HIGH}. The second one is a data.table
+  region_to, Mean, Mode, Median, Min, Max, Q1, Q3, IQR, SD, CV, \cr CI_LOW, CI_HIGH}. The second one is a data.table
   object with the random values for origin-destination matrix generated for each pair of time instants
   time_from-time_to and each pair of regions region_from-region_to, with the following columns: \code{region_from,
   region_to,iter, NPop}. If rndVal is FALSE the list for a pair of time instants time-from-time_to contains only the

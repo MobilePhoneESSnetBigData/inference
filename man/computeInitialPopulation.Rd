@@ -18,14 +18,14 @@ computeInitialPopulation(
 network.}
 
 \item{params}{The parameters of the distribution. It should be a data.table object with the following columns:
-\code{region, omega1, omega2, pnrRate, regionArea_km2, N0, dedupPntRate, alpha, beta, theta, zeta, Q}.}
+\code{region, omega1, omega2, pnrRate, regionArea_km2, N0, \cr dedupPntRate, alpha, beta, theta, zeta, Q}.}
 
 \item{popDistr}{The distribution to be used for population count. This parameter could have one of the following
 values: \code{NegBin} (negative binomial distribution), \code{BetaNegBin} (beta negative binomial distribution) or
 \code{STNegBin}  (state process negative binomial distribution).}
 
 \item{rndVal}{If FALSE the result return by this function will be a list with a single element, a data.table object
-with the following columns: \code{region, Mean, Mode, Median, SD, Min, Max, Q1, Q3, IQR, CV, CI_LOW, CI_HIGH}. If
+with the following columns: \code{region, Mean, Mode, Median, SD, \cr Min, Max, Q1, Q3, IQR, CV, CI_LOW, CI_HIGH}. If
 TRUE the list will have a second element which is a data.table object containing the random values generated for
 each region.}
 
@@ -37,7 +37,7 @@ each region.}
 \value{
 A list object with one or two elements. If rndVal is FALSE the list will have a single element with
   descriptive statistics for the population count, which is a data.table object with the following columns:
-  \code{region, Mean, Mode, Median, Min, Max, Q1, Q3, IQR, SD, CV, CI_LOW, CI_HIGH}. If rndVal is TRUE the list will
+  \code{region, Mean, Mode, Median, Min, Max, Q1, Q3, IQR, SD, CV, \cr CI_LOW, CI_HIGH}. If rndVal is TRUE the list will
   have a second element which is a data.table object containing the random values generated for each region. The name
   of the two list elements giving the descriptive statistics and random values for time t are 'stats' and
   'rnd_values'.

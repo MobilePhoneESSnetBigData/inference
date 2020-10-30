@@ -15,7 +15,8 @@ computeDistrParams(
 )
 }
 \arguments{
-\item{omega}{}
+\item{omega}{The deduplication factors. They are computed by \code{computeDeduplicationFactors} function and it is
+a data.table object with the deduplication factors for each region.}
 
 \item{popRegFileName}{The name of the file with the population counts for each region taken from a population
 register. It has 2 columns: \code{region, N0}.}
@@ -31,14 +32,14 @@ negative binomial distribution.}
 \item{gridFileName}{The name of the .csv file with the grid parameters.  It is required only for the state process
 negative binomial distribution.}
 
-\item{cv}{The coefficient of variation for the population density of each region. The default value is 0.}
+\item{rel_bias}{The value of the relative bias for the population density of each region. The default value is 0.}
 
-\item{re_bias}{The value of the relative bias for the population density of each region. The default value is 0.}
+\item{cv}{The coefficient of variation for the population density of each region. The default value is 0.}
 }
 \value{
-A data.table object with the following columns  \code{region, omega1, omega2, pnrRate, regionArea_km2, N0,
+A data.table object with the following columns  \code{region, omega1, omega2, pnrRate, regionArea_km2, \cr N0,
   dedupPntRate, alpha, beta}. If \code{regsFileName} and \code{gridFileName} are not NULL the result will have 3 more
-  columns:\code{region, omega1, omega2, pnrRate, regionArea_km2, N0, dedupPntRate, alpha, beta, theta, zeta, Q}. They
+  columns:\code{region, omega1, omega2, pnrRate, regionArea_km2, N0, dedupPntRate,\cr alpha, beta, theta, zeta, Q}. They
   are needed only for the state process negative binomial distribution.
 }
 \description{

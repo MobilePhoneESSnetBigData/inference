@@ -4,14 +4,15 @@
 #'
 #' @details This is a script that shows how to use the REST API of this package to compute the distribution of the initial target
 #' population count,
-#' the disitribution of the population count at successive time instants and the origin-destination matrix.
+#' the distribution of the population count at successive time instants and the origin-destination matrix.
 #'
 #' @references \url{https://github.com/MobilePhoneESSnetBigData}
 #'
 #' @examples
 #'
 #' ########################################
-#' # First, in a separate R console run the following instructions that start the http API on your local computer
+#' # First, in a separate R console run the following instructions that start the http API
+#' # on your local computer
 #' # One can replace 127.0.0.1 with the API address of another Web server
 #' library(plumber)
 #' pathPL <-'plumber'
@@ -113,8 +114,10 @@
 #' n_bnb$stats
 #' head(n_bnb$rnd_values)
 #'
-#' # Compute the population count distribution at time instants t > t0 using the Beta Negative Binomial distribution
-#' # first set the name of the file with the population moving from one region to another (output of the aggregation package)
+#' # Compute the population count distribution at time instants t > t0 using the
+#' # Beta Negative Binomial distribution
+#' # first set the name of the file with the population moving from one region
+#' # to another (output of the aggregation package)
 #' nnetODFile <- system.file(path, 'nnetOD.zip', package = 'inference')
 #'
 #' # prepare the body of the http request
@@ -148,7 +151,8 @@
 #' head(nt_bnb[[t]]$rnd_values)
 #'
 #'
-#' # Compute the Origin-Destination matrices for all pairs of time instants time_from-time_to using the Beta Negative Binomial distribution
+#' # Compute the Origin-Destination matrices for all pairs of time instants
+#' # time_from-time_to using the Beta Negative Binomial distribution
 #'
 #' # prepare the body of the http request
 #' body <- list(
