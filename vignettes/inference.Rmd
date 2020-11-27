@@ -442,9 +442,9 @@ A client that can be a script/program written in R, Python, Java or any other la
 
 ## Implementation step by step
 
-We implemented this feature using the *plumber* R package. The first step is to install the *inference* package on the server which can be the local computer (as we will use in our examples) or another true Web server accessible via Internet.
+We implemented this feature using the *plumber* R package. The first step is the install the *inference* package on the server which can be the local computer (as we will use in our examples) or another true Web server accessible via Internet.
 
-We will use the same computer as client and server and we need to run two instances of R. In one instance we will start the http API:
+As we will use the same computer as client and server we need to run two instances of R. In one instance we will start the https API:
 
 ```{r eval=FALSE, message=FALSE}
 library(plumber)
@@ -452,16 +452,16 @@ pathPL <-'plumber'
 initPop_api <- plumber::plumb(system.file(pathPL, 'plumb.R', package = 'inference'))
 initPop_api$run(host = '127.0.0.1', port = 8000)
 ```
-The address 127.0.0.1 can be changed with the address of any other server. After running these lines of code, if we access the localhost at port 8000 we will see the following interface:
+The address 127.0.0.1 can be changed with the address of any other server. After runnig these lines of code, if we access the localhost at port 8000 we will see the following interface:
 
 ![](inference-web-api.jpg)
 
-Here we can see the names of the endpoints of our API as well as the methods that can be used to access them (in out case GET and POST). Our API exposes the *computeDeduplicationFactors()*, *computeDistrParams()*, *computeInitialPopulation()*, *computePopulationT()* and *computePopulationOD()* functions as main processing functions and *getPath()* and *readNnetInitial()* needed for intermediate steps. The end points of the API have the same names as the functions they make public.
+Here we can see the names of the endpoints of our API as well as the methods that can be used to access them (in out case GET and POST). Our API exposes the *computeDeduplicationFactors()*, *computeDistrParams()*, *computeInitialPopulation()*, *computePopulationT()* and *computePopulationOD()* functions. The end points of the API have the same names as the functions they make public.
 
 Now we have to switch to the other R instance which will act as a client. First we have to set the folder where the file with duplicity probabilities and the file defining the regions are stored and the prefix of the posterior
 location probabilities files for all devices.
 
-Please note that if you run this example using a true client-server configuration, where the client and the server reside on different machine, in the same or different networks, the IP addresses should be update accordingly. The path of the files needed for computation shloud be also updated according to their actual location.
+Please note that if you run this example using a true client-server configuration, where the client and the server reside on different machine, in the same or different networks, the IP addresses should be upate accordingly. The path of the files needed for computation shloud be also updated according to their actual location.
 
 ```{r eval=FALSE, message=FALSE}
 library(httr)
@@ -520,9 +520,9 @@ body <- list(
  .popRegFileName = pRFileName,
  .pntRateFileName  = pRateFileName,
  .regsFileName = rgFileName,
- .gridFileName = grFileName,
- .rel_bias = 0,
- .cv = 1e-5
+ .gridFileName <- grFileName,
+ .rel_bias <- 0,
+ .cv <- 1e-5
 )
  
 # set API path
