@@ -17,7 +17,7 @@ target population count, the distribution of the population count at successive 
 
 
 # set the folder where the necessary input files are stored and the prefix of the input file names.
-path      <- 'extData'
+path      <- 'extdata'
 
 prefix <- 'postLocDevice'
 
